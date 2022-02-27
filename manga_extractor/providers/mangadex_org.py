@@ -12,13 +12,13 @@ INCLUDE_ALL = ["cover_art", "manga", "chapter", "scanlation_group", "author", "a
 class NetworkChapter:
     """Represents a link between the MD@H Network and a Chapter."""
     __slots__ = (
-        "valid_thru", "parent_chapter", "node_url", "hash",
+        "valid_thru", "chapter", "node_url", "hash",
         "files", "files_redux", "pages", "pages_redux", "client"
     )
 
-    def __init__(self, data, parent_chapter, client):
+    def __init__(self, data, chapter, client):
         self.valid_thru = int(time.time()) + 900
-        self.parent_chapter = parent_chapter
+        self.chapter = chapter
         self.node_url = data.get("baseUrl")
         _ch = data.get("chapter")
         self.hash = _ch.get("hash")
