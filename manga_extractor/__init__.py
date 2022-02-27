@@ -6,7 +6,7 @@ from manga_extractor import providers
 
 DATACALL = {
     'manga': 'get_manga',
-    'chapter': 'get_chapter',
+    'chapter': 'read_chapter',
     'chapters': 'get_manga_chapters',
     'cover': 'get_cover',
 }
@@ -31,8 +31,4 @@ class MangaExtractor:
             if self.parsed_url.netloc == provider_instance.domain:
                 for data_type in self.type_list:
                     data[data_type] = getattr(provider_instance, DATACALL[data_type])()
-
-
-        print(data['manga'].title)
-
         return data

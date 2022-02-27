@@ -11,8 +11,10 @@ INCLUDE_ALL = ["cover_art", "manga", "chapter", "scanlation_group", "author", "a
 
 class NetworkChapter:
     """Represents a link between the MD@H Network and a Chapter."""
-    __slots__ = ("valid_thru", "parent_chapter", "node_url", "hash", "files", "files_redux", "pages", "pages_redux",
-                 "client")
+    __slots__ = (
+        "valid_thru", "parent_chapter", "node_url", "hash",
+        "files", "files_redux", "pages", "pages_redux", "client"
+    )
 
     def __init__(self, data, parent_chapter, client):
         self.valid_thru = int(time.time()) + 900
@@ -38,8 +40,10 @@ class NetworkChapter:
 
 class Cover:
     """Represents a MangaDex Cover."""
-    __slots__ = ("id", "desc", "volume", "file", "parent_manga", "url", "url_512", "url_256", "created_at",
-                 "updated_at", "client")
+    __slots__ = (
+        "id", "desc", "volume", "file", "manga", "url", "url_512",
+        "url_256", "created_at", "updated_at", "client"
+    )
 
     def __init__(self, data, client):
         self.id = data.get("id")
@@ -48,8 +52,8 @@ class Cover:
         self.desc = _attrs.get("description")
         self.volume = _attrs.get("volume")
         self.file = _attrs.get("fileName")
-        self.parent_manga = next((x["id"] for x in _rel if x["type"] == "manga"), None)
-        self.url = f"https://uploads.mangadex.org/covers/{self.parent_manga}/{self.file}"
+        self.manga = next((x["id"] for x in _rel if x["type"] == "manga"), None)
+        self.url = f"https://uploads.mangadex.org/covers/{self.manga}/{self.file}"
         self.url_512 = f"{self.url}.512.jpg"
         self.url_256 = f"{self.url}.256.jpg"
         self.created_at = _attrs.get("createdAt")
@@ -104,8 +108,10 @@ class User:
 
 class Group:
     """Represents a MangaDex Group."""
-    __slots__ = ("id", "name", "desc", "website", "irc_server", "irc_channel", "discord", "email", "locked",
-                 "official", "verified", "leader", "members", "created_at", "updated_at", "client")
+    __slots__ = (
+        "id", "name", "desc", "website", "irc_server", "irc_channel", "discord", "email",
+        "locked", "official", "verified", "leader", "members", "created_at", "updated_at", "client"
+    )
 
     def __init__(self, data, client):
         self.id = data.get("id")
@@ -144,8 +150,10 @@ class Group:
 
 class Chapter:
     """Represents a MangaDex Chapter."""
-    __slots__ = ("id", "volume", "chapter", "title", "language", "pages_external", "published_at", "created_at",
-                 "updated_at", "parent_manga", "group", "uploader", "client")
+    __slots__ = (
+        "id", "volume", "chapter", "title", "language", "pages_external",
+        "published_at", "created_at", "updated_at", "manga", "group", "uploader", "client"
+    )
 
     def __init__(self, data, client):
         self.id = data.get("id")
@@ -161,9 +169,9 @@ class Chapter:
         self.updated_at = _attrs.get("updatedAt")
         try:
             _manga = [x["attributes"] for x in _rel if x["type"] == "manga"]
-            self.parent_manga = next((Manga(x, client) for x in _rel if x["type"] == "manga"), None)
+            self.manga = next((Manga(x, client) for x in _rel if x["type"] == "manga"), None)
         except (IndexError, KeyError):
-            self.parent_manga = next((x["id"] for x in _rel if x["type"] == "manga"), None)
+            self.manga = next((x["id"] for x in _rel if x["type"] == "manga"), None)
         try:
             _group = [x["attributes"] for x in _rel if x["type"] == "scanlation_group"]
             self.group = [Group(x, client) for x in _rel if x["type"] == "scanlation_group"]
@@ -188,9 +196,10 @@ class Chapter:
 
 class Manga:
     """Represents a MangaDex Manga."""
-    __slots__ = ("id", "title", "titles", "desc", "links", "language", "last_volume", "last_chapter",
-                 "type", "status", "year", "content", "tags", "created_at", "updated_at", "author", "artist", "cover",
-                 "client")
+    __slots__ = (
+        "id", "title", "titles", "desc", "links", "language", "last_volume", "last_chapter", "type",
+        "status", "year", "content", "tags", "created_at", "updated_at", "author", "artist", "cover", "client"
+    )
 
     def __init__(self, data, client):
         self.id = data.get("id")
@@ -298,7 +307,7 @@ class MangadexOrg(Provider):
         params = None
         if includes:
             params = {"includes[]": includes}
-        req = self.session.get(f"{self.api}/chapter/{uuid}", params=params)
+        req = self.session.get(f"{self.api_url}/chapter/{uuid}", params=params)
         if req.status_code == 200:
             resp = req.json()
             return Chapter(resp["data"], self)
@@ -307,17 +316,17 @@ class MangadexOrg(Provider):
         else:
             raise APIError(req)
 
-    def get_manga_chapters(self, mg: Manga, params: dict = None, includes: list = None) -> List[Chapter]:
+    def get_manga_chapters(self, params: dict = None, includes: list = None) -> List[Chapter]:
         """Gets chapters associated with a specific Manga."""
         includes = INCLUDE_ALL if not includes else includes
         params = params or {}
         if includes:
             params["includes[]"] = includes
-        return self._retrieve_pages(f"{self.api}/manga/{mg.id}/feed", Chapter, call_limit=100, params=params)
+        return self._retrieve_pages(f"{self.api_url}/manga/{self.uuid}/feed", Chapter, call_limit=100, params=params)
 
     def get_cover(self) -> Cover:
         """Gets a cover with a specific uuid."""
-        req = self.session.get(f"{self.api}/cover/{uuid}")
+        req = self.session.get(f"{self.api_url}/cover/{uuid}")
         if req.status_code == 200:
             resp = req.json()
             return Cover(resp["data"], self)
@@ -326,12 +335,13 @@ class MangadexOrg(Provider):
         else:
             raise APIError(req)
 
-    def read_chapter(self, ch: Chapter, force_443: bool = False) -> NetworkChapter:
+    def read_chapter(self, force_443: bool = False) -> NetworkChapter:
         """Pulls a chapter from the MD@H Network."""
         data = {"forcePort443": force_443}
-        req = self.session.get(f"{self.api}/at-home/server/{ch.id}", params=data)
+        req = self.session.get(f"{self.api_url}/at-home/server/{self.uuid}", params=data)
         if req.status_code == 200:
             resp = req.json()
+            ch = self.get_chapter()
             return NetworkChapter(resp, ch, self)
         else:
             raise APIError(req)
@@ -340,7 +350,7 @@ class MangadexOrg(Provider):
                limit: int = 100) -> List[Union[Manga, Chapter, Group, Author, Cover, User]]:
         """Searches an object."""
         m = SearchMapping(obj)
-        return self._retrieve_pages(f"{self.api}{m.path}", m.object, limit=limit, call_limit=100, params=params)
+        return self._retrieve_pages(f"{self.api_url}{m.path}", m.object, limit=limit, call_limit=100, params=params)
 
     def _retrieve_pages(self, url: str, obj: Type[Union[Manga, Chapter, Group, Author, Cover]],
                         limit: int = 0, call_limit: int = 500,
