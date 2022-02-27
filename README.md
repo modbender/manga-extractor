@@ -20,28 +20,28 @@ The providers and it's usage is listed below.
 It's easy to use from python code.
 
 - Step 1:
-Import `MangaExtractor` like this
+Import `Mext` like this
 
-  `from mext import MangaExtractor`
+  `from mext import Mext`
 
 - Step 2:
-Get the URL of manga or chapter and pass it to object of `MangaExtractor`
+Get the URL of manga or chapter and pass it to `Mext`
 
   ```python
   manga_url = 'xxx1'
   chapter_url = 'xxx2'
 
   # To get manga
-  me = MangaExtractor(['manga'], manga_url)
+  me = Mext(['manga'], manga_url)
 
   # To get one particular chapter
-  me = MangaExtractor(['chapter'], chapter_url)
+  me = Mext(['chapter'], chapter_url)
 
   # Pass manga url to get chapter list belonging to manga
-  me = MangaExtractor(['chapters'], manga_url)
+  me = Mext(['chapters'], manga_url)
 
   # Pass manga url when you need both manga and chapter
-  me = MangaExtractor(['manga', 'chapters'], manga_url)
+  me = Mext(['manga', 'chapters'], manga_url)
   ```
 
 ## Providers
@@ -51,30 +51,40 @@ Get the URL of manga or chapter and pass it to object of `MangaExtractor`
 
 ### Mangadex
 
-Get Manga
+Get Manga using Manga URL
 
 ```python
-from mext import MangaExtractor
+from mext import Mext
 
-url = 'https://mangadex.org/title/d1c0d3f9-f359-467c-8474-0b2ea8e06f3d/bocchi-sensei-teach-me-mangadex'
+manga_url = 'https://mangadex.org/title/d1c0d3f9-f359-467c-8474-0b2ea8e06f3d/bocchi-sensei-teach-me-mangadex'
 
-me = MangaExtractor(['manga'], url)
-data = me.get() #You'll get back a dictionary
+me = Mext(['manga'], manga_url)
+data = me.get() #You'll get back a instance of Manga
 print(vars(data['manga']))
 ```
 
-Get Chapter
+Get Chapter using Chapter URL
 
 ```python
-from mext import MangaExtractor
+from mext import Mext
 
-url = 'https://mangadex.org/chapter/e183d3f4-fde0-4288-a1ed-8547490f84b3'
+chapter_url = 'https://mangadex.org/chapter/e183d3f4-fde0-4288-a1ed-8547490f84b3'
 
-me = MangaExtractor(['chapter'], url)
-data = me.get() #You'll get back a dictionary
+me = Mext(['chapter'], chapter_url)
+data = me.get() #You'll get back a instance of Chapter
 print(vars(data['chapter']))
 ```
 
+Get Chapter List belonging to a manga using Manga URL
+```python
+from mext import Mext
+
+manga_url = 'https://mangadex.org/title/f7972eed-0040-4aac-b8de-fc99c522c25a/anti-kissmanga-anthology'
+
+me = Mext(['chapters'], manga_url)
+data = me.get() #You'll get back a list of instances of Chapter
+print(data)
+```
 
 ## Credits
 

@@ -12,7 +12,7 @@ DATACALL = {
 }
 
 
-class MangaExtractor:
+class Mext:
 
     def __init__(self, type_list: list, url: str):
         self.url = url
