@@ -1,4 +1,4 @@
-# Manga Extractor
+# MEXT - Manga/Manhua/Manhwa Extractor
 
 A simple manga extractor. Extracts any comic info, chapter list and chapter pages. This is an app that strictly provides API.
 
@@ -8,7 +8,7 @@ A simple manga extractor. Extracts any comic info, chapter list and chapter page
 
 Not yet on pypi but will soon be, and then it will be like below
 
-`pip install manga-extractor`
+`pip install mext`
 
 
 ## Usage
@@ -22,7 +22,7 @@ It's easy to use from python code.
 - Step 1:
 Import `MangaExtractor` like this
 
-  `from manga_extractor import MangaExtractor`
+  `from mext import MangaExtractor`
 
 - Step 2:
 Get the URL of manga or chapter and pass it to object of `MangaExtractor`
@@ -54,7 +54,7 @@ Get the URL of manga or chapter and pass it to object of `MangaExtractor`
 Get Manga
 
 ```python
-from manga_extractor import MangaExtractor
+from mext import MangaExtractor
 
 url = 'https://mangadex.org/title/d1c0d3f9-f359-467c-8474-0b2ea8e06f3d/bocchi-sensei-teach-me-mangadex'
 
@@ -66,7 +66,7 @@ print(vars(data['manga']))
 Get Chapter
 
 ```python
-from manga_extractor import MangaExtractor
+from mext import MangaExtractor
 
 url = 'https://mangadex.org/chapter/e183d3f4-fde0-4288-a1ed-8547490f84b3'
 

@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 from typing import List, Dict, Union, Type
 
-from manga_extractor import providers
+from mext import providers
 
 
 DATACALL = {

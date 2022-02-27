@@ -2,7 +2,7 @@ import time
 
 from typing import List, Dict, Union, Type
 
-from manga_extractor.provider_template import Provider
+from mext.provider_template import Provider
 
 #Taken from https://github.com/Proxymiity/MangaDex.py
 
