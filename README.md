@@ -6,8 +6,6 @@ A simple manga extractor. Extracts any comic info, chapter list and chapter page
 
 ## Installations
 
-Not yet on pypi but will soon be, and then it will be like below
-
 `pip install mext`
 
 
@@ -19,13 +17,12 @@ The providers and it's usage is listed below.
 
 It's easy to use from python code.
 
-- Step 1:
-Import `Mext` like this
+**Steps:**
+1. Import `Mext` like this
 
   `from mext import Mext`
 
-- Step 2:
-Get the URL of manga or chapter and pass it to `Mext`
+2. Get the URL of manga or chapter and pass it to `Mext`
 
   ```python
   manga_url = 'xxx1'
@@ -46,10 +43,10 @@ Get the URL of manga or chapter and pass it to `Mext`
 
 ## Providers
 
-- Mangadex
-- ...others coming soon
+1. Mangadex
+2. ...others coming soon
 
-### Mangadex
+### 1. Mangadex
 
 Get Manga using Manga URL
 
