@@ -20,7 +20,7 @@ It's easy to use from python code.
 **Steps:**
 1. Import `Mext` like this
 
-  `from mext import Mext`
+   `from mext import Mext`
 
 2. Get the URL of manga or chapter and pass it to `Mext`
 
@@ -46,7 +46,7 @@ It's easy to use from python code.
 1. Mangadex
 2. ...others coming soon
 
-### 1. Mangadex
+#### Mangadex
 
 Get Manga using Manga URL
 
