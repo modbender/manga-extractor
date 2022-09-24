@@ -43,10 +43,11 @@ It's easy to use from python code.
 
 ## Providers
 
-1. Mangadex
-2. ...others coming soon
+1. MangaDex
+2. AsuraScans
+3. ...others coming soon
 
-#### Mangadex
+### Mangadex
 
 Get Manga using Manga URL
 
@@ -55,9 +56,9 @@ from mext import Mext
 
 manga_url = 'https://mangadex.org/title/d1c0d3f9-f359-467c-8474-0b2ea8e06f3d/bocchi-sensei-teach-me-mangadex'
 
-me = Mext(['manga'], manga_url)
-data = me.get() #You'll get back a instance of Manga
-print(vars(data['manga']))
+me = Mext(['manga'], manga_url) # You'll get back a instance of Mext with Manga data
+manga = me.manga
+print(manga.to_dict())
 ```
 
 Get Chapter using Chapter URL
@@ -67,20 +68,20 @@ from mext import Mext
 
 chapter_url = 'https://mangadex.org/chapter/e183d3f4-fde0-4288-a1ed-8547490f84b3'
 
-me = Mext(['chapter'], chapter_url)
-data = me.get() #You'll get back a instance of Chapter
-print(vars(data['chapter']))
+me = Mext(['chapter'], chapter_url) # You'll get back a instance of Mext with Chapter data
+chapter = me.chapter
+print(chapter.to_dict())
 ```
 
-Get Chapter List belonging to a manga using Manga URL
+Get Chapters List belonging to a manga using Manga URL
 ```python
 from mext import Mext
 
 manga_url = 'https://mangadex.org/title/f7972eed-0040-4aac-b8de-fc99c522c25a/anti-kissmanga-anthology'
 
-me = Mext(['chapters'], manga_url)
-data = me.get() #You'll get back a list of instances of Chapter
-print(data)
+me = Mext(['chapter_list'], manga_url) # You'll get back a list of instances of Mext with a list of Chapter data
+chapter_list = me.chapter_list
+print(chapter_list.to_dict())
 ```
 
 ## Credits
