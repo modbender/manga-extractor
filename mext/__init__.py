@@ -5,16 +5,15 @@ from mext import enums, exceptions, providers
 
 class Mext:
 
-    def __init__(self, type_list: list, url: str):
-        self.url = url
-        self.type_list = self.validate_type_list(type_list)
+    def __init__(self, type_list: list = None, url: str = None):
 
-        self.parsed_url = urlparse(url)
-
-        data = self.get()
-
-        for key, value in data.items():
-            setattr(self, key, value)
+        if type_list and url:
+            self.populate(type_list, url)
+        elif not (type_list and url):
+            return
+        else:
+            raise Exception("For population during initialization both types of data and url needs to be provided")
+        
 
     @property
     def all_providers(self):
@@ -32,18 +31,23 @@ class Mext:
 
         return type_list
 
-    def get(self):
+    def populate(self, type_list: list, url: str):
+        type_list = self.validate_type_list(type_list)
+
+        parsed_url = urlparse(url)
+
         data = {}
         provider_instance = providers.get_provider_instance(
-            netloc=self.parsed_url.netloc)
-        provider_instance.process_url(self.url)
-        for data_type in self.type_list:
+            netloc=parsed_url.netloc)
+        provider_instance.process_url(url)
+        for data_type in type_list:
             data[data_type] = getattr(
                 provider_instance, enums.Datacall[data_type].value[0]
-            )(self.url)
+            )(url)
 
         if not data:
             raise exceptions.NotYetSupported(
                 'The given URL is not supported right now.')
-
-        return data
+        
+        for key, value in data.items():
+            setattr(self, key, value)

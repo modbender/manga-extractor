@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import overload
 
-class AttributeEnum(Enum):
+class BaseEnum(Enum):
 
     @classmethod
     def __contains__(cls, name):
@@ -23,7 +23,10 @@ class AttributeEnum(Enum):
     def reverse_dict(cls):
         return {c.value: c.name for c in cls}
 
-class Datacall(AttributeEnum):
+class AttributeEnum(str, BaseEnum):
+    pass
+
+class Datacall(BaseEnum):
     latest_list = ('get_latest', 'latest_list')
     manga = ('get_manga', 'manga')
     manga_list = ('get_manga_list', 'manga_list')

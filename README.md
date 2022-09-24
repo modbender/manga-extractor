@@ -4,9 +4,15 @@ A simple manga extractor. Extracts any comic info, chapter list and chapter page
 
 **Still in development.**
 
+This has been tested only on Windows 11 64-bit.
+
 ## Installations
 
 `pip install mext`
+
+Important Steps:
+- Have Chrome browser installed, download chromedriver matching your Chrome browser version.
+- Add chromedriver location to PATH environment variable for this to work
 
 
 ## Usage
@@ -28,24 +34,35 @@ It's easy to use from python code.
   manga_url = 'xxx1'
   chapter_url = 'xxx2'
 
+  # Initialize
+  me = Mext()
+
   # To get manga
-  me = Mext(['manga'], manga_url)
+  me.populate(['manga'], manga_url)
+  manga = me.manga
 
   # To get one particular chapter
-  me = Mext(['chapter'], chapter_url)
+  me.populate(['chapter'], chapter_url)
+  chapter = me.chapter
 
   # Pass manga url to get chapter list belonging to manga
-  me = Mext(['chapters'], manga_url)
+  me.populate(['chapter_list'], manga_url)
+  chapters = me.chapter_list
 
   # Pass manga url when you need both manga and chapter
-  me = Mext(['manga', 'chapters'], manga_url)
+  me.populate(['manga', 'chapter_list'], manga_url)
+  manga = me.manga
+  chapters = me.chapter_list
   ```
+
+  If you are using Mext for one time data collection you could directly pass the arguments given to `populate` to `Mext` directly at initialization.
 
 ## Providers
 
 1. MangaDex
 2. AsuraScans
-3. ...others coming soon
+
+...others coming soon
 
 ### Mangadex
 
@@ -86,4 +103,4 @@ print(chapter_list.to_dict())
 
 ## Credits
 
-Mangadex API - [MangaDex.py](https://github.com/Proxymiity/MangaDex.py)
+- Mangadex API - [MangaDex.py](https://github.com/Proxymiity/MangaDex.py)

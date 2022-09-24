@@ -1,8 +1,6 @@
 import json
 import functools
 
-from textwrap import wrap
-
 from mext import enums
 
 # Get Selenium Status Code
