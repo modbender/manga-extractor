@@ -28,7 +28,8 @@ class Selenium:
 
         self.driver = uc.Chrome(
             options=self.options,
-            desired_capabilities=self.capabilities
+            desired_capabilities=self.capabilities,
+            version_main=105
         )
 
     def get_page(self, url, *args, **kwargs):

@@ -51,11 +51,14 @@ class Cover(Model):
     def __repr__(self) -> str:
         return str(self)
 
+    def get_url(self):
+        return self.url | self.url_512 | self.url_256 | ""
+
 
 class Tag(Model):
     """Represents a Manga Tag."""
     __slots__ = (
-        "id", "name", "description",
+        "id", "name", "description", "url",
         "provider", "instance"
     )
 
@@ -64,6 +67,7 @@ class Tag(Model):
         self.id: str = None
         self.name: str = ""
         self.description: str = ""
+        self.url: str = ""
         self.provider = provider
         self.instance = self
 
@@ -77,7 +81,7 @@ class Tag(Model):
 class Genre(Model):
     """Represents a Manga Tag."""
     __slots__ = (
-        "id", "name", "description",
+        "id", "name", "description", "url",
         "provider", "instance"
     )
 
@@ -86,6 +90,7 @@ class Genre(Model):
         self.id: str = None
         self.name: str = ""
         self.description: str = ""
+        self.url: str = ""
         self.provider = provider
         self.instance = self
 
@@ -99,8 +104,8 @@ class Genre(Model):
 class Person(Model):
     """Represents a Author or Artist or any related Person"""
     __slots__ = (
-        "id", "name", "image", "bio",
-        "provider", "instance"
+        "id", "name", "image", "bio", "url",
+        "provider", "instance",
     )
 
     def __init__(self, provider):
@@ -109,6 +114,7 @@ class Person(Model):
         self.name: str = ""
         self.image: str = ""
         self.bio: str = ""
+        self.url: str = ""
         self.provider = provider
         self.instance = self
 
@@ -124,7 +130,7 @@ class Manga(Model):
     __slots__ = (
         "id", "title", "alt", "description", "links", "language", "comic_type", "status",
         "year", "rating", "followers", "genres", "tags", "authors", "artists", "cover",
-        "first_chapter", "last_chapter",
+        "first_chapter", "last_chapter", "chapter_list", "url", "created_at", "updated_at",
         "provider", "instance"
     )
 
@@ -146,10 +152,12 @@ class Manga(Model):
         self.authors: List[Person] = []
         self.artists: List[Person] = []
         self.cover: Cover = None
-        self.first_chapter: str = ""
-        self.last_chapter: str = ""
-        self.created_at: datetime = datetime.now()
-        self.updated_at: datetime = datetime.now()
+        self.first_chapter: Chapter = None
+        self.last_chapter: Chapter = None
+        self.chapter_list: List[Chapter] = []
+        self.url: str = ""
+        self.created_at: datetime = None
+        self.updated_at: datetime = None
         self.provider = provider
         self.instance = self
 
@@ -160,11 +168,29 @@ class Manga(Model):
         return str(self)
 
 
+class Page(Model):
+    """Represents a Page"""
+    __slots__ = (
+        "url",
+        "provider", "instance"
+    )
+
+    def __init__(self, provider):
+        super().__init__(provider)
+        self.url: str = ""
+
+    def __str__(self) -> str:
+        return self.url
+
+    def __repr__(self) -> str:
+        return self.url
+
+
 class Chapter(Model):
     """Represents a Chapter."""
     __slots__ = (
-        "id", "url", "name", "volume", "language", "pages_external",
-        "manga", "group", "uploader", "created_at", "updated_at",
+        "id", "url", "name", "number", "volume", "language", "pages",
+        "manga", "group", "uploader", "url", "created_at", "updated_at",
         "provider", "instance"
     )
 
@@ -176,17 +202,18 @@ class Chapter(Model):
         self.number: str = ""
         self.volume: float = 0.0
         self.language: str = ""
-        self.pages_external: str = ""
+        self.pages: List[Page] = ""
         self.manga: Manga = None
         self.group: str = None
         self.uploader: str = None
-        self.created_at: datetime = datetime.now()
-        self.updated_at: datetime = datetime.now()
+        self.url: str = ""
+        self.created_at: datetime = None
+        self.updated_at: datetime = None
         self.provider = provider
         self.instance = self
 
     def __str__(self) -> str:
-        return "Chapter {self.number}"
+        return f"Chapter {self.number}"
 
     def __repr__(self) -> str:
         return str(self)

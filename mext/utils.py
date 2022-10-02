@@ -1,5 +1,6 @@
 import json
 import functools
+from textwrap import wrap
 
 from mext import enums
 
@@ -18,28 +19,24 @@ def get_status(logs):
 
 # Decorator
 def data_page(func):
-
-    attribute_name = enums.DatacallAttributes[func.__name__]
+    attr_name = enums.DatacallAttributes[func.__name__]
 
     @functools.wraps(func)
-    def wrapper(instance, url, refresh=False):
+    def wrapper(instance, url, page=1, refresh=False):
 
-        attribute_value = getattr(instance, attribute_name, None)
+        attr_value = getattr(instance, attr_name, None)
 
         try:
-            if attribute_value and refresh is False:
-                return attribute_value
+            if attr_value and refresh is False:
+                return attr_value
 
-            instance.selenium.get_cfpage(url)
-            instance.find_error(url)
-
-            return_data = func(instance)
+            return_data = func(instance, url, page)
             
             instance.selenium.exit()
 
-            setattr(instance, attribute_name, return_data)
-            return getattr(instance, attribute_name)
+            setattr(instance, attr_name, return_data)
+            return getattr(instance, attr_name)
         except Exception as e:
             raise e
-
+    
     return wrapper

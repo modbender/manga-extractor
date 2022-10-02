@@ -55,7 +55,7 @@ It's easy to use from python code.
   chapters = me.chapter_list
   ```
 
-  If you are using Mext for one time data collection you could directly pass the arguments given to `populate` to `Mext` directly at initialization.
+  If you are using Mext for one time data collection you could pass the arguments given to `populate` to `Mext` directly at initialization.
 
 ## Providers
 

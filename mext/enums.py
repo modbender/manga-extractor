@@ -28,7 +28,7 @@ class AttributeEnum(str, BaseEnum):
 
 class Datacall(BaseEnum):
     latest_list = ('get_latest', 'latest_list')
-    manga = ('get_manga', 'manga')
+    manga = ('get_manga', 'manga', 'manga_url')
     manga_list = ('get_manga_list', 'manga_list')
     chapter = ('get_chapter', 'chapter')
     chapter_list = ('get_manga_chapters', 'chapter_list')

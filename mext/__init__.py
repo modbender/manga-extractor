@@ -2,8 +2,10 @@ from urllib.parse import urlparse
 
 from mext import enums, exceptions, providers
 
+slots = tuple(enums.DatacallAttributes.values())
 
 class Mext:
+    __slots__ = slots
 
     def __init__(self, type_list: list = None, url: str = None):
 
@@ -51,3 +53,5 @@ class Mext:
         
         for key, value in data.items():
             setattr(self, key, value)
+        
+        return data
