@@ -4,20 +4,25 @@ README = open('README.md').read()
 
 setuptools.setup(
     name='mext',
-    version='1.0.2',
+    version='1.0.3',
     url='https://github.com/modbender/manga-extractor',
     description='A simple manga extractor. Extracts any comic info, chapter list and chapter pages. In development.',
     long_description=README,
     long_description_content_type='text/markdown',
     author='Yashas H R',
     author_email='rameshmamathayashas@gmail.com',
+    packages=setuptools.find_packages(),
+    package_dir={'mext': 'mext'},
+    package_data={
+        'mext': ['data/*.json'],
+    },
     install_requires=[
+        'lxml',
         'beautifulsoup4',
         'undetected-chromedriver',
     ],
     python_requires='>=3.5',
     platforms=['any'],
-    packages=setuptools.find_packages(),
     classifiers=[
         'License :: OSI Approved :: BSD License',
         'Natural Language :: English',

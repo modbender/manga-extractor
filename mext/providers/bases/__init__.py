@@ -1,9 +1,12 @@
 import os
 import json
 import importlib
+import pkg_resources
 
 bases_module = 'mext.providers.bases'
-bases_file_name = 'mext/all_bases.json'
+bases_file_name = pkg_resources.resource_filename(
+    'mext', os.path.join('data', 'all_bases.json')
+)
 bases_file_path = os.path.abspath(bases_file_name)
 bases_json = json.load(open(bases_file_path))
 

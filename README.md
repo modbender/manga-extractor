@@ -12,7 +12,7 @@ This has been tested only on Windows 11 64-bit.
 
 Important Steps:
 - Have Chrome browser installed, download chromedriver matching your Chrome browser version.
-- Add chromedriver location to PATH environment variable for this to work
+- Add chromedriver location to PATH environment variable.
 
 
 ## Usage
