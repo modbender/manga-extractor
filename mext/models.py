@@ -189,7 +189,7 @@ class Page(Model):
 class Chapter(Model):
     """Represents a Chapter."""
     __slots__ = (
-        "id", "url", "name", "number", "volume", "language", "pages",
+        "id", "url", "name", "number", "volume", "language", "special", "pages",
         "manga", "group", "uploader", "url", "created_at", "updated_at",
         "provider", "instance"
     )
@@ -202,6 +202,7 @@ class Chapter(Model):
         self.number: str = ""
         self.volume: float = 0.0
         self.language: str = ""
+        self.special: bool = False
         self.pages: List[Page] = ""
         self.manga: Manga = None
         self.group: str = None

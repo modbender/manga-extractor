@@ -4,6 +4,7 @@ from mext import enums, exceptions, providers
 
 slots = tuple(enums.DatacallAttributes.values())
 
+
 class Mext:
     __slots__ = slots
 
@@ -14,8 +15,8 @@ class Mext:
         elif not (type_list and url):
             return
         else:
-            raise Exception("For population during initialization both types of data and url needs to be provided")
-        
+            raise Exception(
+                "For population during initialization both types of data and url needs to be provided")
 
     @property
     def all_providers(self):
@@ -23,13 +24,16 @@ class Mext:
 
     def validate_type_list(self, type_list):
         wrong_types = []
+        valid_fetch_types = list(enums.Datacall.keys())
         for t in type_list:
-            if t not in list(enums.Datacall.keys()):
+            if t not in valid_fetch_types:
                 wrong_types.append(t)
 
         if wrong_types:
             raise ValueError(
-                "Wrong fetch types provided: {}".format(wrong_types))
+                "Wrong fetch types provided: {}. Valid fetch types are: {}".format(
+                    wrong_types, valid_fetch_types)
+            )
 
         return type_list
 
@@ -50,8 +54,8 @@ class Mext:
         if not data:
             raise exceptions.NotYetSupported(
                 'The given URL is not supported right now.')
-        
+
         for key, value in data.items():
             setattr(self, key, value)
-        
-        return data
+
+        return self
