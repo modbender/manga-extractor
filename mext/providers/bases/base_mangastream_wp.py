@@ -173,13 +173,14 @@ class MangaStreamBase(Provider):
 
         for metadata_element in soup.select('div.infox div.fmed'):
 
-            # Author            
+            # Author
             author_names = []
             if metadata_element and \
                     metadata_element.select_one('b').string.strip() == 'Author' and \
                     metadata_element.select_one('span').string.strip() not in wrong_field_values:
 
-                author_names_text = metadata_element.select_one('span').text.strip()
+                author_names_text = metadata_element.select_one(
+                    'span').text.strip()
 
                 for name in author_names_text.split('/'):
                     if name:
@@ -195,7 +196,8 @@ class MangaStreamBase(Provider):
                     metadata_element.select_one('b').string.strip() == 'Artist' and \
                     metadata_element.select_one('span').string.strip() not in wrong_field_values:
 
-                artist_names_text = metadata_element.select_one('span').text.strip()
+                artist_names_text = metadata_element.select_one(
+                    'span').text.strip()
 
                 for name in artist_names_text.split('/'):
                     if name:
@@ -282,20 +284,23 @@ class MangaStreamBase(Provider):
             lis = breadcrumb_element.select('li[itemprop="itemListElement"]')
 
             title_element = lis[1]
-            title_text = title_element.select_one('span[itemprop="name"]').string if title_element else ''
-            
+            title_text = title_element.select_one(
+                'span[itemprop="name"]').string if title_element else ''
+
             chapter_bc = lis[2]
-            chapter_name_text = chapter_bc.select_one('span[itemprop="name"]').string if chapter_bc else ''
+            chapter_name_text = chapter_bc.select_one(
+                'span[itemprop="name"]').string if chapter_bc else ''
 
             if title_text and chapter_name_text:
                 chapter_text = chapter_name_text\
-                        .strip().lstrip(title_text).strip()
-                
+                    .strip().replace(title_text, "", 1).strip()
                 chapter_number = re.findall('Chapter (\d+)', chapter_text)
                 if chapter_number:
                     chapter_number = chapter_number[0]
 
                     chapter.number = str(float(chapter_number))
+                else:
+                    raise Exception('Chapter number not found')
 
         pages = []
         pages_element = soup.select_one('div#readerarea')
@@ -327,19 +332,21 @@ class MangaStreamBase(Provider):
 
             if chapter_element:
 
-                chapter_url_element = chapter_element.select_one('div.eph-num > a')
+                chapter_url_element = chapter_element.select_one(
+                    'div.eph-num > a')
                 if chapter_url_element:
                     chapter.url = chapter_url_element.attrs['href']
 
                 chapter_number = chapter_element.attrs['data-num']
                 if chapter_number:
                     chapter.number = str(float(chapter_number))
-                
+
                 date_element = chapter_element.select_one('span.chapterdate')
                 date_text = date_element.string if date_element else ''
                 if date_text:
-                    chapter.created_at = datetime.strptime(date_text, '%B %d, %Y')
-            
+                    chapter.created_at = datetime.strptime(
+                        date_text, '%B %d, %Y')
+
             chapter_list.append(chapter)
 
         return chapter_list
