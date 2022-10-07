@@ -49,6 +49,10 @@ class Selenium:
     @property
     def source(self):
         return self.driver.page_source
+    
+    def __del__(self):
+        if getattr(self, 'driver', None):
+            self.exit()
 
     def exit(self):
         self.driver.quit()

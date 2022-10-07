@@ -189,7 +189,7 @@ class Page(Model):
 class Chapter(Model):
     """Represents a Chapter."""
     __slots__ = (
-        "id", "url", "name", "number", "volume", "language", "special", "pages",
+        "id", "name", "number", "volume", "language", "special", "pages",
         "manga", "group", "uploader", "url", "created_at", "updated_at",
         "provider", "instance"
     )
@@ -197,7 +197,6 @@ class Chapter(Model):
     def __init__(self, provider):
         super().__init__(provider)
         self.id: str = ""
-        self.url: str = ""
         self.name: str = ""
         self.number: str = ""
         self.volume: float = 0.0

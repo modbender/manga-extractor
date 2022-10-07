@@ -171,41 +171,59 @@ class MangaStreamBase(Provider):
             manga.description = description_text.strip('\n')\
                 .translate(trans)
 
-        # Author
-        author_element = soup.select('div.infox div.fmed')[1]
+        for metadata_element in soup.select('div.infox div.fmed'):
 
-        author_names = []
-        if author_element and \
-                author_element.select_one('b').string.strip() == 'Author' and \
-                author_element.select_one('span').string.strip() not in wrong_field_values:
+            # Author            
+            author_names = []
+            if metadata_element and \
+                    metadata_element.select_one('b').string.strip() == 'Author' and \
+                    metadata_element.select_one('span').string.strip() not in wrong_field_values:
 
-            author_names_text = author_element.select_one('span').text.strip()
+                author_names_text = metadata_element.select_one('span').text.strip()
 
-            for name in author_names_text.split('/'):
-                if name:
-                    person = models.Person(self)
-                    person.name = name.strip()
-                    author_names.append(person)
+                for name in author_names_text.split('/'):
+                    if name:
+                        person = models.Person(self)
+                        person.name = name.strip()
+                        author_names.append(person)
 
-        manga.authors = author_names
+            manga.authors = author_names
 
-        # Artist
-        artist_element = soup.select('div.infox div.fmed')[2]
+            # Artist
+            artist_names = []
+            if metadata_element and \
+                    metadata_element.select_one('b').string.strip() == 'Artist' and \
+                    metadata_element.select_one('span').string.strip() not in wrong_field_values:
 
-        artist_names = []
-        if artist_element and \
-                artist_element.select_one('b').string.strip() == 'Artist' and \
-                artist_element.select_one('span').string.strip() not in wrong_field_values:
+                artist_names_text = metadata_element.select_one('span').text.strip()
 
-            artist_names_text = artist_element.select_one('span').text.strip()
+                for name in artist_names_text.split('/'):
+                    if name:
+                        person = models.Person(self)
+                        person.name = name.strip()
+                        artist_names.append(person)
 
-            for name in artist_names_text.split('/'):
-                if name:
-                    person = models.Person(self)
-                    person.name = name.strip()
-                    artist_names.append(person)
+            manga.artists = artist_names
 
-        manga.artists = artist_names
+            # Posted On
+            if metadata_element and \
+                    metadata_element.select_one('b').string.strip() == 'Posted On' and \
+                    metadata_element.select_one('span').text.strip() not in wrong_field_values:
+
+                posted_on_dt = metadata_element.attrs.get('datetime')
+
+                if posted_on_dt:
+                    manga.created_at = datetime.fromisoformat(posted_on_dt)
+
+            # Updated On
+            if metadata_element and \
+                    metadata_element.select_one('b').string.strip() == 'Updated On' and \
+                    metadata_element.select_one('span').text.strip() not in wrong_field_values:
+
+                updated_on_dt = metadata_element.attrs.get('datetime')
+
+                if posted_on_dt:
+                    manga.created_at = datetime.fromisoformat(updated_on_dt)
 
         # Genres
         genre_elements = soup.select('span.mgen > a')
@@ -243,30 +261,6 @@ class MangaStreamBase(Provider):
 
             if rating_text:
                 manga.rating = float(rating_text)
-
-        # Posted On
-        posted_on_element = soup.select('div.infox div.fmed')[5]
-
-        if posted_on_element and \
-                posted_on_element.select_one('b').string.strip() == 'Posted On' and \
-                posted_on_element.select_one('span').text.strip() not in wrong_field_values:
-
-            posted_on_dt = posted_on_element.attrs.get('datetime')
-
-            if posted_on_dt:
-                manga.created_at = datetime.fromisoformat(posted_on_dt)
-
-        # Updated On
-        updated_on_element = soup.select('div.infox div.fmed')[6]
-
-        if updated_on_element and \
-                updated_on_element.select_one('b').string.strip() == 'Posted On' and \
-                updated_on_element.select_one('span').text.strip() not in wrong_field_values:
-
-            updated_on_dt = updated_on_element.attrs.get('datetime')
-
-            if posted_on_dt:
-                manga.created_at = datetime.fromisoformat(updated_on_dt)
 
         # Return complete Manga data
         return manga
@@ -332,6 +326,10 @@ class MangaStreamBase(Provider):
             chapter = models.Chapter(self)
 
             if chapter_element:
+
+                chapter_url_element = chapter_element.select_one('div.eph-num > a')
+                if chapter_url_element:
+                    chapter.url = chapter_url_element.attrs['href']
 
                 chapter_number = chapter_element.attrs['data-num']
                 if chapter_number:
