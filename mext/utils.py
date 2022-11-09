@@ -4,7 +4,9 @@ from textwrap import wrap
 
 from mext import enums
 
+
 # Get Selenium Status Code
+
 def get_status(logs):
     for log in logs:
         if log['message']:
@@ -17,7 +19,9 @@ def get_status(logs):
             except:
                 pass
 
+
 # Decorator
+
 def data_page(func):
     attr_name = enums.DatacallAttributes[func.__name__]
 
@@ -31,12 +35,12 @@ def data_page(func):
                 return attr_value
 
             return_data = func(instance, url, page)
-            
+
             instance.selenium.exit()
 
             setattr(instance, attr_name, return_data)
             return getattr(instance, attr_name)
         except Exception as e:
             raise e
-    
+
     return wrapper
