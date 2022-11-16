@@ -129,7 +129,14 @@ class MangaStreamBase(Provider):
 
         title_text = title_element.string if title_element else ''
         if title_text:
-            manga.title = title_text
+            trans = title_text.maketrans({
+                "‘": "'",
+                "’": "'",
+                "“": "'",
+                "”": "'",
+            })
+            manga.title = title_text.strip()\
+                .translate(trans)
         else:
             raise Exception('Could not get title for comic')
 

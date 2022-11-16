@@ -130,8 +130,8 @@ class Manga(Model):
     __slots__ = (
         "id", "title", "alts", "description", "links", "language", "comic_type", "status",
         "year", "rating", "followers", "genres", "tags", "authors", "artists", "current_cover", 
-        "all_covers", "first_chapter", "last_chapter", "chapter_list", "url", "created_at", "updated_at",
-        "provider", "instance"
+        "all_covers", "adult", "first_chapter", "last_chapter", "chapter_list", "url", 
+        "created_at", "updated_at", "provider", "instance"
     )
 
     def __init__(self, provider):
@@ -153,6 +153,7 @@ class Manga(Model):
         self.artists: List[Person] = []
         self.current_cover: Cover = None
         self.all_covers: List[Cover] = []
+        self.adult: bool = False
         self.first_chapter: Chapter = None
         self.last_chapter: Chapter = None
         self.chapter_list: List[Chapter] = []
