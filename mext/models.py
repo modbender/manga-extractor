@@ -128,9 +128,9 @@ class Person(Model):
 class Manga(Model):
     """Represents a Manga."""
     __slots__ = (
-        "id", "title", "alt", "description", "links", "language", "comic_type", "status",
-        "year", "rating", "followers", "genres", "tags", "authors", "artists", "cover",
-        "first_chapter", "last_chapter", "chapter_list", "url", "created_at", "updated_at",
+        "id", "title", "alts", "description", "links", "language", "comic_type", "status",
+        "year", "rating", "followers", "genres", "tags", "authors", "artists", "current_cover", 
+        "all_covers", "first_chapter", "last_chapter", "chapter_list", "url", "created_at", "updated_at",
         "provider", "instance"
     )
 
@@ -138,11 +138,11 @@ class Manga(Model):
         super().__init__(provider)
         self.id: str = ""
         self.title: str = ""
-        self.alt: List[str] = []
+        self.alts: List[str] = []
         self.description: str = ""
         self.links: List[str] = []
-        self.language: str = ""
-        self.comic_type: enums.ComicTypesLanguage = None
+        self.language: enums.ComicTypesLanguage = None
+        self.comic_type: str = ""
         self.status: enums.StatusTypes = None
         self.year: int = datetime.now().year
         self.rating: float = 0.0
@@ -151,7 +151,8 @@ class Manga(Model):
         self.tags: List[Tag] = []
         self.authors: List[Person] = []
         self.artists: List[Person] = []
-        self.cover: Cover = None
+        self.current_cover: Cover = None
+        self.all_covers: List[Cover] = []
         self.first_chapter: Chapter = None
         self.last_chapter: Chapter = None
         self.chapter_list: List[Chapter] = []

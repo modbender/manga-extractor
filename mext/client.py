@@ -19,10 +19,14 @@ class Selenium:
         self.options.headless = True
 
         argument_list = [
+            # '--no-sandbox', # Insecure
+            '--disable-gpu',
             '--no-first-run',
+            '--disable-extensions'
             '--no-service-autorun',
             '--password-store=basic',
-            '--log-level=3'
+            '--window-size=1920,1080',
+            '--log-level=3',
         ]
         self.options.arguments.extend(argument_list)
 

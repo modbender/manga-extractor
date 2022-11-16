@@ -237,9 +237,9 @@ class Manga(models.Manga):
                 _related_cover["relationships"] = [
                     {"type": "manga", "id": self.id}]
                 _related_cover = Cover(_related_cover, client)
-            self.cover = _related_cover
+            self.current_cover = _related_cover
         except (IndexError, KeyError):
-            self.cover = next((x["id"]
+            self.current_cover = next((x["id"]
                               for x in _rel if x["type"] == "cover_art"), None)
         self.client = client
 

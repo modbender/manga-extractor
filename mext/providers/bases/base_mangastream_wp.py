@@ -58,7 +58,7 @@ class MangaStreamBase(Provider):
                     if cover_element:
                         cover = models.Cover(self)
                         cover.url = cover_element.attrs['src']
-                        manga.cover = cover
+                        manga.current_cover = cover
 
                     type_element = update_element.select_one('span.type')
                     type_text = type_element.string if type_element else ''
@@ -111,6 +111,19 @@ class MangaStreamBase(Provider):
             if id_text:
                 manga.id = id_text.strip()
 
+        # Cover
+        thumb_element = soup.select_one(
+            'div.thumb[itemtype="https://schema.org/ImageObject"] > img[itemprop="image"]'
+        )
+
+        if thumb_element:
+            thumb_url = thumb_element.attrs.get('src')
+
+            if thumb_url:
+                cover = models.Cover(self)
+                cover.url = thumb_url.strip()
+                manga.current_cover = cover
+
         # Title
         title_element = soup.select_one('h1.entry-title')
 
@@ -153,7 +166,7 @@ class MangaStreamBase(Provider):
                 for alt_name in alt_text.split(','):
                     alt_names.append(alt_name.strip())
 
-        manga.alt = alt_names
+        manga.alts = alt_names
 
         # Description
         description_element = soup.select_one(
@@ -168,19 +181,44 @@ class MangaStreamBase(Provider):
                 "“": "'",
                 "”": "'",
             })
-            manga.description = description_text.strip('\n')\
+            manga.description = description_text.strip()\
                 .translate(trans)
 
         for metadata_element in soup.select('div.infox div.fmed'):
 
-            # Author
-            author_names = []
-            if metadata_element and \
-                    metadata_element.select_one('b').string.strip() == 'Author' and \
-                    metadata_element.select_one('span').string.strip() not in wrong_field_values:
+            if metadata_element:
+                field_name_element = metadata_element.select_one('b')
+                if field_name_element:
+                    if field_name_element.string:
+                        field_name = field_name_element.string
+                    else:
+                        field_name = field_name_element.text
 
-                author_names_text = metadata_element.select_one(
-                    'span').text.strip()
+                    field_name = field_name.strip()
+                else:
+                    continue
+
+                field_value_element = metadata_element\
+                    .select_one('span')
+                if field_value_element:
+                    if field_value_element.string:
+                        field_value = field_value_element.string.strip()
+                    else:
+                        field_value = field_value_element.text.strip()
+
+                    field_value = field_value.strip()
+
+                    if field_value in wrong_field_values:
+                        continue
+                else:
+                    continue
+            else:
+                continue
+
+            # Author
+            if field_name == 'Author':
+                author_names = []
+                author_names_text = field_value
 
                 for name in author_names_text.split('/'):
                     if name:
@@ -188,16 +226,12 @@ class MangaStreamBase(Provider):
                         person.name = name.strip()
                         author_names.append(person)
 
-            manga.authors = author_names
+                manga.authors = author_names
 
             # Artist
-            artist_names = []
-            if metadata_element and \
-                    metadata_element.select_one('b').string.strip() == 'Artist' and \
-                    metadata_element.select_one('span').string.strip() not in wrong_field_values:
-
-                artist_names_text = metadata_element.select_one(
-                    'span').text.strip()
+            if field_name == 'Artist':
+                artist_names = []
+                artist_names_text = field_value
 
                 for name in artist_names_text.split('/'):
                     if name:
@@ -205,24 +239,22 @@ class MangaStreamBase(Provider):
                         person.name = name.strip()
                         artist_names.append(person)
 
-            manga.artists = artist_names
+                manga.artists = artist_names
 
             # Posted On
-            if metadata_element and \
-                    metadata_element.select_one('b').string.strip() == 'Posted On' and \
-                    metadata_element.select_one('span').text.strip() not in wrong_field_values:
+            if field_name == 'Posted On':
 
-                posted_on_dt = metadata_element.attrs.get('datetime')
+                posted_on_dt = field_value_element\
+                    .select_one('time').attrs.get('datetime')
 
                 if posted_on_dt:
                     manga.created_at = datetime.fromisoformat(posted_on_dt)
 
             # Updated On
-            if metadata_element and \
-                    metadata_element.select_one('b').string.strip() == 'Updated On' and \
-                    metadata_element.select_one('span').text.strip() not in wrong_field_values:
+            if field_name == 'Updated On':
 
-                updated_on_dt = metadata_element.attrs.get('datetime')
+                updated_on_dt = field_value_element\
+                    .select_one('time').attrs.get('datetime')
 
                 if posted_on_dt:
                     manga.created_at = datetime.fromisoformat(updated_on_dt)

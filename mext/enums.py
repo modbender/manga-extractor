@@ -45,7 +45,7 @@ class StatusTypes(AttributeEnum):
     
 
 class ComicTypesLanguage(AttributeEnum):
-    manga = 'jp'
+    manga = 'ja'
     manhua = 'zh'
     manhwa = 'ko'
     webtoon = 'en'
