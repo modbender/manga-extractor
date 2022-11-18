@@ -129,8 +129,8 @@ class Manga(Model):
     """Represents a Manga."""
     __slots__ = (
         "id", "title", "alts", "description", "links", "language", "comic_type", "status",
-        "year", "rating", "followers", "genres", "tags", "authors", "artists", "current_cover", 
-        "all_covers", "adult", "first_chapter", "last_chapter", "chapter_list", "url", 
+        "year", "rating", "followers", "genres", "tags", "authors", "artists", "current_cover",
+        "all_covers", "adult", "first_chapter", "last_chapter", "chapter_list", "url",
         "created_at", "updated_at", "provider", "instance"
     )
 
@@ -215,7 +215,10 @@ class Chapter(Model):
         self.instance = self
 
     def __str__(self) -> str:
-        return f"Chapter {self.number}"
+        srep = f"Chapter {self.number}"
+        if self.name:
+            srep = f"{srep} - {self.name}"
+        return srep
 
     def __repr__(self) -> str:
         return str(self)

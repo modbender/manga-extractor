@@ -58,7 +58,8 @@ class MangaStreamBase(Provider):
                     if cover_element:
                         cover = models.Cover(self)
                         cover.url = cover_element.attrs['src']
-                        manga.current_cover = cover
+                        manga.all_covers.append(cover)
+                        manga.current_cover = manga.all_covers[-1]
 
                     type_element = update_element.select_one('span.type')
                     type_text = type_element.string if type_element else ''
@@ -378,7 +379,23 @@ class MangaStreamBase(Provider):
 
                 chapter_number = chapter_element.attrs['data-num']
                 if chapter_number:
-                    chapter.number = str(float(chapter_number))
+
+                    if '-' in chapter_number:
+                        chapter_split = chapter_number.split('-')
+                        chapter_number = chapter_split[0].strip()
+                        chapter.name = chapter_split[1].strip()
+
+                    try:
+                        chapter.number = float(chapter_number)
+                    except:
+                        chapter_number = chapter_number.strip()
+                        if chapter_number == "Preview":
+                            chapter.number = float(0)
+
+                if chapter.number:
+                    chapter.number = str(chapter.number)
+                else:
+                    continue
 
                 date_element = chapter_element.select_one('span.chapterdate')
                 date_text = date_element.string if date_element else ''
