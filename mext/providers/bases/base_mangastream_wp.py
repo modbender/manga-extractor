@@ -124,6 +124,14 @@ class MangaStreamBase(Provider):
                 cover = models.Cover(self)
                 cover.url = thumb_url.strip()
                 manga.current_cover = cover
+        
+        # Background Image
+        bg_element = soup.select_one(
+            'div.bigcover div.ime img[src]'
+        )
+
+        if bg_element and bg_element.attrs.get('src'):
+            manga.banner_picture = bg_element.attrs.get('src').strip()
 
         # Title
         title_element = soup.select_one('h1.entry-title')

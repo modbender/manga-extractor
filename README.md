@@ -104,3 +104,6 @@ print(chapter_list.to_dict())
 ## Credits
 
 - Mangadex API - [MangaDex.py](https://github.com/Proxymiity/MangaDex.py)
+
+## Contributions
+Ready for any genuine support and valid pull requests.

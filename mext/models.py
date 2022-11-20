@@ -37,7 +37,7 @@ class Cover(Model):
         super().__init__(provider)
         self.id: str = None
         self.description: str = ""
-        self.volume: float = 0.0
+        self.volume: float = float(0)
         self.file_bytes: io.BytesIO = io.BytesIO()
         self.url: str = ""
         self.url_256: str = ""
@@ -130,8 +130,8 @@ class Manga(Model):
     __slots__ = (
         "id", "title", "alts", "description", "links", "language", "comic_type", "status",
         "year", "rating", "followers", "genres", "tags", "authors", "artists", "current_cover",
-        "all_covers", "adult", "first_chapter", "last_chapter", "chapter_list", "url",
-        "created_at", "updated_at", "provider", "instance"
+        "all_covers", "banner_picture", "adult", "first_chapter", "last_chapter", "chapter_list",
+        "url", "created_at", "updated_at", "provider", "instance"
     )
 
     def __init__(self, provider):
@@ -145,14 +145,15 @@ class Manga(Model):
         self.comic_type: str = ""
         self.status: enums.StatusTypes = None
         self.year: int = datetime.now().year
-        self.rating: float = 0.0
-        self.followers: int = 0
+        self.rating: float = float(0)
+        self.followers: int = int(0)
         self.genres: List[Genre] = []
         self.tags: List[Tag] = []
         self.authors: List[Person] = []
         self.artists: List[Person] = []
         self.current_cover: Cover = None
         self.all_covers: List[Cover] = []
+        self.banner_picture: str = ""
         self.adult: bool = False
         self.first_chapter: Chapter = None
         self.last_chapter: Chapter = None
@@ -201,7 +202,7 @@ class Chapter(Model):
         self.id: str = ""
         self.name: str = ""
         self.number: str = ""
-        self.volume: float = 0.0
+        self.volume: float = float(0)
         self.language: str = ""
         self.special: bool = False
         self.pages: List[Page] = ""
