@@ -124,6 +124,7 @@ class MangaStreamBase(Provider):
                 cover = models.Cover(self)
                 cover.url = thumb_url.strip()
                 manga.current_cover = cover
+                manga.all_covers.append(cover)
         
         # Background Image
         bg_element = soup.select_one(
