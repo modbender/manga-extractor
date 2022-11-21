@@ -213,7 +213,7 @@ class MangaStreamBase(Provider):
             alt_text = alt_element.select_one('span').string.strip()
 
             if alt_text and alt_text not in wrong_field_values:
-                for alt_name in alt_text.split(','):
+                for alt_name in alt_text.split('|'):
                     alt_names.append(alt_name.strip())
 
         manga.alts = alt_names
