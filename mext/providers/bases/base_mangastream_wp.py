@@ -17,6 +17,39 @@ class MangaStreamBase(Provider):
 
         self.selenium = client.Selenium()
 
+    def process_chapter_name(self, chapter_text):
+        chapter_number, chapter_name = float(0), ""
+        if chapter_text:
+            chapter_text = chapter_text.strip()
+
+            if not chapter_number:
+                match_pattern = r'[\{|\(](.*)[\}|\)]'
+                if re.search(match_pattern, chapter_text):
+                    chapter_name = re.findall(
+                        match_pattern, chapter_text
+                    )[0]
+
+                    chapter_number = re\
+                        .sub(match_pattern, '', chapter_text)\
+                        .strip()
+            
+            if not chapter_number:
+                if '-' in chapter_text:
+                    chapter_split = chapter_text.split('-')
+                    chapter_number = chapter_split[0].strip()
+                    chapter_name = chapter_split[1].strip()
+
+            chapter_number = chapter_number or chapter_text
+            try:
+                chapter_number = float(chapter_number)
+            except:
+                chapter_number = chapter_number.strip()
+                if chapter_number == "Preview":
+                    chapter_name = chapter_number
+                    chapter_number = float(0)
+
+        return chapter_number, chapter_name
+
     @utils.data_page
     def get_latest(self, url, page):
 
@@ -125,7 +158,7 @@ class MangaStreamBase(Provider):
                 cover.url = thumb_url.strip()
                 manga.current_cover = cover
                 manga.all_covers.append(cover)
-        
+
         # Background Image
         bg_element = soup.select_one(
             'div.bigcover div.ime img[src]'
@@ -343,11 +376,19 @@ class MangaStreamBase(Provider):
             if title_text and chapter_name_text:
                 chapter_text = chapter_name_text\
                     .strip().replace(title_text, "", 1).strip()
-                chapter_number = re.findall('Chapter (\d+)', chapter_text)
-                if chapter_number:
-                    chapter_number = chapter_number[0]
+                chapter_text = re.findall('Chapter (.*)', chapter_text)
+                if chapter_text:
+                    chapter_number, chapter_name = self.process_chapter_name(
+                        chapter_text[0]
+                    )
 
-                    chapter.number = str(float(chapter_number))
+                    if chapter_number:
+                        chapter.number = str(chapter_number)
+                    else:
+                        raise Exception("Error getting chapter text extract")
+
+                    if chapter_name:
+                        chapter.name = str(chapter_name)
                 else:
                     raise Exception('Chapter number not found')
 
@@ -381,30 +422,23 @@ class MangaStreamBase(Provider):
 
             if chapter_element:
 
-                chapter_url_element = chapter_element.select_one(
-                    'div.eph-num > a')
+                chapter_url_element = chapter_element\
+                    .select_one('div.eph-num > a')
                 if chapter_url_element:
                     chapter.url = chapter_url_element.attrs['href']
 
-                chapter_number = chapter_element.attrs['data-num']
+                chapter_text = chapter_element.attrs['data-num']
+                chapter_number, chapter_name = self.process_chapter_name(
+                    chapter_text
+                )
+
                 if chapter_number:
-
-                    if '-' in chapter_number:
-                        chapter_split = chapter_number.split('-')
-                        chapter_number = chapter_split[0].strip()
-                        chapter.name = chapter_split[1].strip()
-
-                    try:
-                        chapter.number = float(chapter_number)
-                    except:
-                        chapter_number = chapter_number.strip()
-                        if chapter_number == "Preview":
-                            chapter.number = float(0)
-
-                if chapter.number:
-                    chapter.number = str(chapter.number)
+                    chapter.number = str(chapter_number)
                 else:
                     continue
+
+                if chapter_name:
+                    chapter.name = str(chapter_name)
 
                 date_element = chapter_element.select_one('span.chapterdate')
                 date_text = date_element.string if date_element else ''
