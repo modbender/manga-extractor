@@ -22,22 +22,15 @@ class MangaStreamBase(Provider):
         if chapter_text:
             chapter_text = chapter_text.strip()
 
-            if not chapter_number:
-                match_pattern = r'[\{|\(](.*)[\}|\)]'
-                if re.search(match_pattern, chapter_text):
-                    chapter_name = re.findall(
-                        match_pattern, chapter_text
-                    )[0]
+            match_pattern = r'([0-9]*[.]?[0-9]+)\s*\-?\s*(.*)'
+            rsearch = re.search(match_pattern, chapter_text)
+            len_rsearch = len(rsearch.groups())
 
-                    chapter_number = re\
-                        .sub(match_pattern, '', chapter_text)\
-                        .strip()
+            if len_rsearch > 0 and rsearch.group(1):
+                chapter_number = rsearch.group(1)
 
-            if not chapter_number:
-                if '-' in chapter_text:
-                    chapter_split = chapter_text.split('-')
-                    chapter_number = chapter_split[0].strip()
-                    chapter_name = chapter_split[1].strip()
+                if len_rsearch > 1 and rsearch.group(2):
+                    chapter_name = rsearch.group(2)
 
             chapter_number = chapter_number or chapter_text
             try:
@@ -47,6 +40,13 @@ class MangaStreamBase(Provider):
                 if chapter_number == "Preview":
                     chapter_name = chapter_number
                     chapter_number = float(0)
+
+            try:
+                chapter_number = float(chapter_number)
+            except:
+                print(
+                    f"Error getting chapter number for text '{chapter_text}'"
+                )
 
         return chapter_number, chapter_name
 
