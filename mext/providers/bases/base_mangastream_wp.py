@@ -18,35 +18,37 @@ class MangaStreamBase(Provider):
         self.selenium = client.Selenium()
 
     def process_chapter_name(self, chapter_text):
-        chapter_number, chapter_name = float(0), ""
+        chapter_number, chapter_name = None, ''
         if chapter_text:
             chapter_text = chapter_text.strip()
 
-            match_pattern = r'([0-9]*[.]?[0-9]+)\s*\-?\s*(.*)'
-            rsearch = re.search(match_pattern, chapter_text)
-            len_rsearch = len(rsearch.groups())
+            match_patterns = [r'preview', r'([0-9]*[.]?[0-9]+)\s*\-?\s*(.*)']
+            if re.search(match_patterns[0], chapter_text, re.IGNORECASE):
+                chapter_name = chapter_text
+                chapter_number = float(0)
 
-            if len_rsearch > 0 and rsearch.group(1):
-                chapter_number = rsearch.group(1)
+            elif re.search(match_patterns[1], chapter_text):
+                rsearch = re.search(match_patterns[1], chapter_text)
+                len_rsearch = len(rsearch.groups())
 
-                if len_rsearch > 1 and rsearch.group(2):
-                    chapter_name = rsearch.group(2)
+                if len_rsearch > 0 and rsearch.group(1):
+                    chapter_number = rsearch.group(1)
 
-            chapter_number = chapter_number or chapter_text
-            try:
-                chapter_number = float(chapter_number)
-            except:
-                chapter_number = chapter_number.strip()
-                if chapter_number == "Preview":
-                    chapter_name = chapter_number
-                    chapter_number = float(0)
+                    if len_rsearch > 1 and rsearch.group(2):
+                        chapter_name = rsearch.group(2)
+
+            chapter_number = chapter_number \
+                if chapter_number not in [None, ''] \
+                else chapter_text
 
             try:
                 chapter_number = float(chapter_number)
             except:
                 print(
-                    f"Error getting chapter number for text '{chapter_text}'"
+                    f"Error getting chapter number for text {chapter_text}"
                 )
+        else:
+            chapter_number = None
 
         return chapter_number, chapter_name
 
@@ -437,7 +439,7 @@ class MangaStreamBase(Provider):
                     chapter_text
                 )
 
-                if chapter_number:
+                if chapter_number not in [None, '']:
                     chapter.number = str(chapter_number)
                 else:
                     continue
