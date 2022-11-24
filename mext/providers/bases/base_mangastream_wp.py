@@ -383,13 +383,15 @@ class MangaStreamBase(Provider):
             if title_text and chapter_name_text:
                 chapter_text = chapter_name_text\
                     .strip().replace(title_text, "", 1).strip()
-                chapter_text = re.findall('Chapter (.*)', chapter_text)
+                print("1", chapter_text)
+                chapter_text = re.findall(r'(?:chapter)?\s*(.+)', chapter_text, re.IGNORECASE)
+                print("2", chapter_text)
                 if chapter_text:
                     chapter_number, chapter_name = self.process_chapter_name(
                         chapter_text[0]
                     )
 
-                    if chapter_number:
+                    if chapter_number not in [None, '']:
                         chapter.number = str(chapter_number)
                     else:
                         raise Exception("Error getting chapter text extract")
@@ -397,7 +399,7 @@ class MangaStreamBase(Provider):
                     if chapter_name:
                         chapter.name = str(chapter_name)
                 else:
-                    raise Exception('Chapter number not found')
+                    print('Chapter number not found in text {chapter_text}')
 
         pages = []
         pages_element = soup.select_one('div#readerarea')
