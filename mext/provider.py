@@ -1,7 +1,7 @@
 from urllib.error import HTTPError
 from urllib.parse import urlparse
 
-from mext import utils
+from mext import client, utils
 
 
 class Provider:
@@ -12,10 +12,17 @@ class Provider:
         self.language = ''
         self.selenium = None
 
+        self.selenium = client.Selenium()
+
     def process_url(self, url):
         self.parsed_url = urlparse(url)
         self.scheme = self.parsed_url.scheme
         self.netloc = self.parsed_url.netloc
+    
+    # @utils.data_page
+    def get_latest(self, attribute_name):
+        """Gets list of updated mangas."""
+        raise NotImplementedError
 
     # @utils.data_page
     def get_manga(self, attribute_name):

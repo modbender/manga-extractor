@@ -15,8 +15,6 @@ class MangaStreamBase(Provider):
         self.name = name
         super(MangaStreamBase, self).__init__(name, siteUrl)
 
-        self.selenium = client.Selenium()
-
     def process_chapter_name(self, chapter_text):
         chapter_number, chapter_name = None, ''
         if chapter_text:

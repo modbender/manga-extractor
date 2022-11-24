@@ -7,6 +7,9 @@ class AsuraScansCom(MangaStreamBase):
         self.language = 'en'
         super(AsuraScansCom, self).__init__(name, siteUrl)
 
+    def get_latest(self, *args, **kwargs):
+        return super(AsuraScansCom, self).get_latest(*args, **kwargs)
+
     def get_manga(self, *args, **kwargs):
         return super(AsuraScansCom, self).get_manga(*args, **kwargs)
 
