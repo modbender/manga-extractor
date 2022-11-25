@@ -20,7 +20,10 @@ class MangaStreamBase(Provider):
         if chapter_text:
             chapter_text = chapter_text.strip()
 
-            match_patterns = [r'preview', r'([0-9]*[.]?[0-9]+)\s*\-?\s*(.*)']
+            match_patterns = [
+                r'preview|promotional\s+video', 
+                r'([0-9]*[.]?[0-9]+)\s*\-?\s*(.*)'
+            ]
             if re.search(match_patterns[0], chapter_text, re.IGNORECASE):
                 chapter_name = chapter_text
                 chapter_number = float(0)
