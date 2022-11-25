@@ -371,19 +371,19 @@ class MangaStreamBase(Provider):
             lis = breadcrumb_element.select('li[itemprop="itemListElement"]')
 
             title_element = lis[1]
-            title_text = title_element.select_one(
-                'span[itemprop="name"]').string if title_element else ''
+            title_text = title_element\
+                .select_one('span[itemprop="name"]').string if title_element else ''
 
             chapter_bc = lis[2]
-            chapter_name_text = chapter_bc.select_one(
-                'span[itemprop="name"]').string if chapter_bc else ''
+            chapter_name_text = chapter_bc\
+                .select_one('span[itemprop="name"]').string if chapter_bc else ''
 
             if title_text and chapter_name_text:
                 chapter_text = chapter_name_text\
                     .strip().replace(title_text, "", 1).strip()
-                print("1", chapter_text)
-                chapter_text = re.findall(r'(?:chapter)?\s*(.+)', chapter_text, re.IGNORECASE)
-                print("2", chapter_text)
+                chapter_text = re.findall(
+                    r'(?:chapter)?\s*(.+)', chapter_text, re.IGNORECASE)
+                    
                 if chapter_text:
                     chapter_number, chapter_name = self.process_chapter_name(
                         chapter_text[0]
@@ -392,7 +392,9 @@ class MangaStreamBase(Provider):
                     if chapter_number not in [None, '']:
                         chapter.number = str(chapter_number)
                     else:
-                        raise Exception("Error getting chapter text extract")
+                        raise Exception(
+                            f"Error extracting chapter number from text text {chapter_text}"
+                        )
 
                     if chapter_name:
                         chapter.name = str(chapter_name)
