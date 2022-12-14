@@ -12,6 +12,8 @@ class Mext:
 
         if type_list and url:
             self.populate(type_list, url)
+        elif not (type_list and url):
+            return
         else:
             raise Exception(
                 "For population during initialization both types of data and url needs to be provided")
