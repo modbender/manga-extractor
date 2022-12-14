@@ -19,7 +19,10 @@ setuptools.setup(
     install_requires=[
         'lxml>=4.8.0',
         'beautifulsoup4>=4.10.0',
-        'undetected-chromedriver>=3.1.5.post1',
+        'undetected-chromedriver>=3.1.6',
+        'pyvirtualdisplay>=2.2',
+        'easyprocess>=1.0',
+        'pillow>=9.1.0',
     ],
     python_requires='>=3.5',
     platforms=['any'],

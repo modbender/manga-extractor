@@ -10,9 +10,7 @@ This has been tested only on Windows 11 64-bit.
 
 `pip install mext`
 
-Important Steps:
-- Have Chrome browser installed, download chromedriver matching your Chrome browser version.
-- Add chromedriver location to PATH environment variable.
+**Important: It's necessary to have a virtual or real display to run this for best results**
 
 
 ## Usage

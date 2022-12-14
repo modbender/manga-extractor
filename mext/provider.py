@@ -10,9 +10,9 @@ class Provider:
         self.name = name
         self.siteUrl = siteUrl
         self.language = ''
-        self.selenium = None
 
-        self.selenium = client.Selenium()
+        client.make_driver()
+        self.selenium = client.get_driver()
 
     def process_url(self, url):
         self.parsed_url = urlparse(url)
@@ -48,7 +48,7 @@ class Provider:
         """Gets cover data associated with a specific Manga."""
 
     def find_error(self, url):
-        logs = self.selenium.driver.get_log('performance')
+        logs = self.selenium._driver.get_log('performance')
         status_code = utils.get_status(logs)
 
         http_error_msg = ""

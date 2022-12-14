@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 
-from mext import enums, exceptions, providers
+from mext import enums, exceptions, providers, client
 
 slots = tuple(enums.DatacallAttributes.values())
 
@@ -12,8 +12,6 @@ class Mext:
 
         if type_list and url:
             self.populate(type_list, url)
-        elif not (type_list and url):
-            return
         else:
             raise Exception(
                 "For population during initialization both types of data and url needs to be provided")
@@ -31,8 +29,8 @@ class Mext:
 
         if wrong_types:
             raise ValueError(
-                "Wrong fetch types provided: {}. Valid fetch types are: {}".format(
-                    wrong_types, valid_fetch_types)
+                "Wrong fetch types provided: {}. Valid fetch types are: {}"\
+                    .format(wrong_types, valid_fetch_types)
             )
 
         return type_list
