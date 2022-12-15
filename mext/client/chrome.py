@@ -34,7 +34,7 @@ class ChromeDriver:
                 '--disable-extensions'
                 '--no-service-autorun',
                 '--password-store=basic',
-                '--disable-dev-shm-usage',
+                # '--disable-dev-shm-usage',
                 '--disable-blink-features',
                 '--disable-blink-features=AutomationControlled',
             ]
