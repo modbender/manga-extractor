@@ -45,9 +45,9 @@ class MangaStreamBase(Provider):
             try:
                 chapter_number = float(chapter_number)
             except:
-                print(
-                    f"Error getting chapter number for text {chapter_text}"
-                )
+                if chapter_text:
+                    chapter_number = float(0)
+                    chapter_name = chapter_text
         else:
             chapter_number = None
 
