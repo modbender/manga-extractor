@@ -53,7 +53,8 @@ class Mext:
 
         if not data:
             raise exceptions.NotYetSupported(
-                'The given URL is not supported right now.')
+                'The given URL is not supported right now.'
+            )
 
         for key, value in data.items():
             setattr(self, key, value)

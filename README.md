@@ -6,6 +6,11 @@ A simple manga extractor. Extracts any comic info, chapter list and chapter page
 
 This has been tested only on Windows 11 64-bit.
 
+## Requirements
+
+- Chrome Browser
+- Node.js
+
 ## Installations
 
 `pip install mext`
@@ -101,6 +106,8 @@ print(chapter_list.to_dict())
 
 ## Credits
 
+Made using
+- Manga-py [manga-py](https://github.com/manga-py/manga-py)
 - Mangadex API - [MangaDex.py](https://github.com/Proxymiity/MangaDex.py)
 
 ## Contributions

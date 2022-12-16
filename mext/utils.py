@@ -36,7 +36,8 @@ def data_page(func):
 
             return_data = func(instance, url, page)
 
-            instance.selenium.exit()
+            if instance.client.is_selenium:
+                instance.selenium.exit()
 
             setattr(instance, attr_name, return_data)
             return getattr(instance, attr_name)

@@ -20,13 +20,13 @@ class ReaperScansCom(Provider):
 
     def get_manga(self, url, page):
 
-        self.selenium.get_cfpage(url)
+        req = self.client.http.get(url)
         self.find_error(url)
 
         manga = models.Manga(self)
         manga.url = url
 
-        soup = BeautifulSoup(self.selenium.source, 'lxml')
+        soup = BeautifulSoup(req.content, 'lxml')
 
         wrong_field_values = ['-', 'N/A']
 

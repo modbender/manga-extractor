@@ -1,75 +1,38 @@
-from logging import info, error
+from .http import Http
+from . import selenium as Selenium
 
-__all__ = ['get_display', 'make_driver']
+from mext import utils
 
-__cache = {
-    'display': None,
-    'driver': None,
-}
+class Client:
+    http = None
+    selenium = None
 
+    def __init__(self, use_client='http') -> None:
+        self.name = use_client
 
-def get_display():
-    return __cache['display']
-
-
-def get_driver():
-    return __cache['driver']
-
-
-def make_driver(browser: str = None):
-    if __cache['driver'] is not None:
-        return __cache['driver']
-
-    _assert_selenium()
-
-    __cache['display'] = _init_display()
-
-    if browser is None:
-        __cache['driver'] = _auto_browser()
-        return __cache['driver']
-
-    if browser == 'chrome':
-        __cache['driver'] = _chrome(True)
-        return __cache['driver']
+        if not use_client:
+            raise Exception(
+                "Error initializing client, use_client value not supported : {}".format(use_client)
+            )
+        elif use_client == 'selenium':
+            Selenium.make_driver(browser='chrome')
+            self.selenium = Selenium.get_driver()
+        else:
+            self.http = Http()
     
-    info('Initialized Chrome Driver')
-
-    raise RuntimeError('Bad driver type')
-
-
-def _assert_selenium():
-    try:
-        from selenium.webdriver import __version__
-    except ImportError as e:
-        error('Selenium not installed. Please, run "pip install selenium"')
-        raise e
-
-
-def _init_display():
-    try:
-        from pyvirtualdisplay import Display
-        _display = Display(visible=False, size=(1920, 1080))
-        _display.start()
-    except (ImportError, FileNotFoundError):
-        _display = None
-        info('Use real display. See here: https://github.com/ponty/PyVirtualDisplay/blob/master/README.rst')
-    return _display
-
-
-def _auto_browser():
-    try:
-        _driver = _chrome()
-        info('Use chrome')
-        return _driver
-    except Exception as e:
-        error('Browser driver init error', e)
-        raise e
-
-
-def _chrome(show_error: bool = False):
-    try:
-        from .chrome import ChromeDriver
-        return ChromeDriver().init_driver()
-    except Exception as e:
-        show_error and error('Chrome browser driver init error', e)
-        raise e
+    @property
+    def is_http(self):
+        return self.name == 'http'
+    
+    @property
+    def is_selenium(self):
+        return self.name == 'selenium'
+    
+    @property
+    def status_code(self):
+        status_code = None
+        if self.is_selenium:
+            logs = self.selenium._driver.get_log('performance')
+            status_code = utils.get_status(logs)
+        else:
+            self.http.status_code

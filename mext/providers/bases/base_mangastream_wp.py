@@ -69,12 +69,12 @@ class MangaStreamBase(Provider):
 
         mangalist_url = urlunparse(pr)
 
-        self.selenium.get_cfpage(mangalist_url)
+        req = self.client.http.get(url)
         self.find_error(mangalist_url)
 
         latest_list = []
 
-        soup = BeautifulSoup(self.selenium.source, 'lxml')
+        soup = BeautifulSoup(req.content, 'lxml')
 
         listing_element = soup.select_one('div.mrgn div.listupd')
 
@@ -129,13 +129,13 @@ class MangaStreamBase(Provider):
     @utils.data_page
     def get_manga(self, url, page):
 
-        self.selenium.get_cfpage(url)
+        req = self.client.http.get(url)
         self.find_error(url)
 
         manga = models.Manga(self)
         manga.url = url
 
-        soup = BeautifulSoup(self.selenium.source, 'lxml')
+        soup = BeautifulSoup(req.content, 'lxml')
 
         wrong_field_values = ['-', 'N/A']
 
@@ -360,13 +360,13 @@ class MangaStreamBase(Provider):
     @utils.data_page
     def get_chapter(self, url, page):
 
-        self.selenium.get_cfpage(url)
+        req = self.client.http.get(url)
         self.find_error(url)
 
         chapter = models.Chapter(self)
         chapter.url = url
 
-        soup = BeautifulSoup(self.selenium.source, 'lxml')
+        soup = BeautifulSoup(req.content, 'lxml')
 
         breadcrumb_element = soup.select_one(
             'ol[itemtype="http://schema.org/BreadcrumbList"]')
@@ -420,12 +420,12 @@ class MangaStreamBase(Provider):
     @utils.data_page
     def get_manga_chapters(self, url, page):
 
-        self.selenium.get_cfpage(url)
+        req = self.client.http.get(url)
         self.find_error(url)
 
         chapter_list = []
 
-        soup = BeautifulSoup(self.selenium.source, 'lxml')
+        soup = BeautifulSoup(req.content, 'lxml')
 
         chapters_element = soup.select_one('ul.clstyle')
 
