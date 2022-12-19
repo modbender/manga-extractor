@@ -69,7 +69,7 @@ class MangaStreamBase(Provider):
 
         mangalist_url = urlunparse(pr)
 
-        req = self.client.http.get(url)
+        req = self.client.http.get(mangalist_url)
         self.find_error(mangalist_url)
 
         latest_list = []
