@@ -1,40 +1,33 @@
 from enum import Enum
-from typing import overload
+from typing import List, Dict
+
 
 class BaseEnum(Enum):
 
     @classmethod
-    def __contains__(cls, name):
+    def __contains__(cls, name) -> bool:
         return name in [c.name for c in cls]
 
     @classmethod
-    def list(cls):
+    def list(cls) -> List:
         return [c.value for c in cls]
 
     @classmethod
-    def keys(cls):
+    def keys(cls) -> List:
         return [c.name for c in cls]
 
     @classmethod
-    def dict(cls):
+    def dict(cls) -> Dict:
         return {c.name: c.value for c in cls}
 
     @classmethod
-    def reverse_dict(cls):
+    def reverse_dict(cls) -> Dict:
         return {c.value: c.name for c in cls}
+
 
 class AttributeEnum(str, BaseEnum):
     pass
 
-class Datacall(BaseEnum):
-    latest_list = ('get_latest', 'latest_list')
-    manga = ('get_manga', 'manga', 'manga_url')
-    manga_list = ('get_manga_list', 'manga_list')
-    chapter = ('get_chapter', 'chapter')
-    chapter_list = ('get_manga_chapters', 'chapter_list')
-    cover = ('get_cover', 'cover')
-
-DatacallAttributes = {v[0]: v[1] for v in Datacall.list()}
 
 class StatusTypes(AttributeEnum):
     Ongoing = 'Ongoing'
@@ -42,7 +35,7 @@ class StatusTypes(AttributeEnum):
     Haitus = 'Haitus'
     Dropped = 'Dropped'
     ComingSoon = 'Comic Soon'
-    
+
 
 class ComicTypesLanguage(AttributeEnum):
     manga = 'ja'

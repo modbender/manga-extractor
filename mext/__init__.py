@@ -1,62 +1,45 @@
 from urllib.parse import urlparse
+from typing import List
 
-from mext import enums, exceptions, providers, client
-
-slots = tuple(enums.DatacallAttributes.values())
+from mext import models, providers
+from mext.provider import Provider
 
 
 class Mext:
-    __slots__ = slots
 
-    def __init__(self, type_list: list = None, url: str = None):
+    def __init__(self) -> None:
+        self.provider: Provider = None
 
-        if type_list and url:
-            self.populate(type_list, url)
-        elif not (type_list and url):
-            return
-        else:
-            raise Exception(
-                "For population during initialization both types of data and url needs to be provided")
+    def set_provider(self, url):
+        parsed_url = urlparse(url)
+
+        provider_instance = providers.get_provider_instance(
+            netloc=parsed_url.netloc
+        )
+
+        self.provider = provider_instance
+
+    def get_provider(self, url: str) -> Provider:
+        if not self.provider:
+            self.set_provider(url)
+
+        return self.provider
+
+    def get_latest(self, url: str, page=1) -> List[models.Manga]:
+        return self.get_provider(url).get_latest(url, page)
+
+    def get_manga(self, url: str, page=1) -> models.Manga:
+        return self.get_provider(url).get_manga(url, page)
+
+    def get_manga_list(self, url: str, page=1) -> List[models.Manga]:
+        return self.get_provider(url).get_manga_list(url, page)
+
+    def get_chapter(self, url: str, page=1) -> models.Chapter:
+        return self.get_provider(url).get_chapter(url, page)
+
+    def get_manga_chapters(self, url: str, page=1) -> List[models.Chapter]:
+        return self.get_provider(url).get_manga_chapters(url, page)
 
     @property
     def all_providers(self):
         return providers.providers_json
-
-    def validate_type_list(self, type_list):
-        wrong_types = []
-        valid_fetch_types = list(enums.Datacall.keys())
-        for t in type_list:
-            if t not in valid_fetch_types:
-                wrong_types.append(t)
-
-        if wrong_types:
-            raise ValueError(
-                "Wrong fetch types provided: {}. Valid fetch types are: {}"\
-                    .format(wrong_types, valid_fetch_types)
-            )
-
-        return type_list
-
-    def populate(self, type_list: list, url: str):
-        type_list = self.validate_type_list(type_list)
-
-        parsed_url = urlparse(url)
-
-        data = {}
-        provider_instance = providers.get_provider_instance(
-            netloc=parsed_url.netloc)
-        provider_instance.process_url(url)
-        for data_type in type_list:
-            data[data_type] = getattr(
-                provider_instance, enums.Datacall[data_type].value[0]
-            )(url)
-
-        if not data:
-            raise exceptions.NotYetSupported(
-                'The given URL is not supported right now.'
-            )
-
-        for key, value in data.items():
-            setattr(self, key, value)
-
-        return self

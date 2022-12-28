@@ -1,4 +1,4 @@
-from mext.providers.bases.base_mangastream_wp import MangaStreamBase
+from mext.bases import MangaStreamBase
 
 
 class AsuraScansCom(MangaStreamBase):

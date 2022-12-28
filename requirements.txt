@@ -1,9 +1,5 @@
 autopep8==1.7.0
 beautifulsoup4==4.11.1
 cloudscraper==1.2.66
-easyprocess==1.1
 lxml==4.9.1
 pillow==9.3.0
-pysocks==1.7.1
-pyvirtualdisplay==3.0
-undetected-chromedriver==3.1.5.post4

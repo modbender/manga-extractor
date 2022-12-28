@@ -5,7 +5,8 @@ from urllib.parse import ParseResult, urlencode, urlparse, urlunparse
 
 from bs4 import BeautifulSoup
 
-from mext import enums, models, client, utils
+from mext import enums
+from mext import models
 from mext.provider import Provider
 
 
@@ -21,7 +22,7 @@ class MangaStreamBase(Provider):
             chapter_text = chapter_text.strip()
 
             match_patterns = [
-                r'preview|promotional\s+video', 
+                r'preview|promotional\s+video',
                 r'([0-9]*[.]?[0-9]+)\s*\-?\s*(.*)'
             ]
             if re.search(match_patterns[0], chapter_text, re.IGNORECASE):
@@ -53,7 +54,6 @@ class MangaStreamBase(Provider):
 
         return chapter_number, chapter_name
 
-    @utils.data_page
     def get_latest(self, url, page):
 
         parsed_url = urlparse('/'.join(url.split('/')[0:3]))
@@ -93,7 +93,7 @@ class MangaStreamBase(Provider):
                         'div.limit > img.ts-post-image[alt][src]')
                     if cover_element:
                         cover = models.Cover(self)
-                        cover.url = cover_element.attrs['src']
+                        cover.image_link = cover_element.attrs['src']
                         manga.all_covers.append(cover)
                         manga.current_cover = manga.all_covers[-1]
 
@@ -126,7 +126,6 @@ class MangaStreamBase(Provider):
 
         return latest_list
 
-    @utils.data_page
     def get_manga(self, url, page):
 
         req = self.client.http.get(url)
@@ -158,7 +157,7 @@ class MangaStreamBase(Provider):
 
             if thumb_url:
                 cover = models.Cover(self)
-                cover.url = thumb_url.strip()
+                cover.image_link = thumb_url.strip()
                 manga.current_cover = cover
                 manga.all_covers.append(cover)
 
@@ -204,7 +203,7 @@ class MangaStreamBase(Provider):
         if type_text:
             type_text = type_text.strip().lower()
             if type_text in enums.ComicTypesLanguage.dict():
-                manga.language = enums.ComicTypesLanguage[type_text]
+                manga.language = enums.ComicTypesLanguage[type_text].value
 
         # Alternative Titles
         alt_element = soup.select_one('div.infox div.wd-full')
@@ -357,7 +356,6 @@ class MangaStreamBase(Provider):
         # Return complete Manga data
         return manga
 
-    @utils.data_page
     def get_chapter(self, url, page):
 
         req = self.client.http.get(url)
@@ -386,7 +384,7 @@ class MangaStreamBase(Provider):
                     .strip().replace(title_text, "", 1).strip()
                 chapter_text = re.findall(
                     r'(?:chapter)?\s*(.+)', chapter_text, re.IGNORECASE)
-                    
+
                 if chapter_text:
                     chapter_number, chapter_name = self.process_chapter_name(
                         chapter_text[0]
@@ -410,14 +408,13 @@ class MangaStreamBase(Provider):
         for page_element in pages_element.select('p > img[src][width][height]'):
             page_url = page_element.attrs['src']
             page = models.Page(self)
-            page.url = page_url
+            page.image_link = page_url
             pages.append(page)
 
         chapter.pages = pages
 
         return chapter
 
-    @utils.data_page
     def get_manga_chapters(self, url, page):
 
         req = self.client.http.get(url)

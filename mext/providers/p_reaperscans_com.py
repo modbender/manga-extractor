@@ -5,7 +5,8 @@ from urllib.parse import ParseResult, urlencode, urlparse, urlunparse
 
 from bs4 import BeautifulSoup
 
-from mext import enums, models, client, utils
+from mext import enums
+from mext import models
 from mext.provider import Provider
 
 
@@ -15,10 +16,10 @@ class ReaperScansCom(Provider):
         self.language = 'en'
         super(ReaperScansCom, self).__init__(name, siteUrl)
 
-    def get_latest(self, url, page):
+    def get_latest(self, url: str, page):
         return
 
-    def get_manga(self, url, page):
+    def get_manga(self, url: str, page):
 
         req = self.client.http.get(url)
         self.find_error(url)
@@ -81,7 +82,7 @@ class ReaperScansCom(Provider):
             # Status
             if field_name == 'Release Status':
                 if field_value:
-                    manga.status = enums.StatusTypes['Ongoing']
+                    manga.status = enums.StatusTypes['Ongoing'].name
 
             # Type
             type_element = soup.select('div.tsinfo div.imptdt')[1]

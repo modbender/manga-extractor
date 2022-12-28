@@ -1,7 +1,10 @@
 from urllib.error import HTTPError
 from urllib.parse import urlparse
+from typing import List
 
 from mext import client, utils
+
+from mext import models
 
 
 class Provider:
@@ -12,38 +15,39 @@ class Provider:
         self.language = ''
 
         self.client = client.Client('http')
+    
+    def __str__(self) -> str:
+        return self.name
+    
+    def __str__(self) -> str:
+        return str(self)
 
     def process_url(self, url):
         self.parsed_url = urlparse(url)
         self.scheme = self.parsed_url.scheme
         self.netloc = self.parsed_url.netloc
-    
-    # @utils.data_page
-    def get_latest(self, attribute_name):
+
+    def get_latest(self, url: str, page=1) -> List[models.Manga]:
         """Gets list of updated mangas."""
         raise NotImplementedError
 
-    # @utils.data_page
-    def get_manga(self, attribute_name):
+    def get_manga(self, url: str, page=1) -> models.Manga:
         """Gets a manga with a specific url."""
         raise NotImplementedError
 
-    # @utils.data_page
-    def get_manga_list(self, attribute_name):
+    def get_manga_list(self, url: str, page=1) -> List[models.Manga]:
         """Gets a list of Manga."""
         raise NotImplementedError
 
-    # @utils.data_page
-    def get_chapter(self, attribute_name):
+    def get_chapter(self, url: str, page=1) -> models.Chapter:
         """Gets a chapter with a specific url."""
         raise NotImplementedError
 
-    # @utils.data_page
-    def get_manga_chapters(self, attribute_name):
+    def get_manga_chapters(self, url: str, page=1) -> List[models.Chapter]:
         """Gets chapters associated with a specific Manga."""
         raise NotImplementedError
-    
-    def get_cover(self, attribute_name):
+
+    def get_cover(self, url: str) -> models.Cover:
         """Gets cover data associated with a specific Manga."""
 
     def find_error(self, url):
@@ -67,4 +71,5 @@ class Provider:
                 )
 
         if http_error_msg:
-            raise HTTPError(url=url, code=status_code, msg=http_error_msg, hdrs=None, fp=None)
+            raise HTTPError(url=url, code=status_code,
+                            msg=http_error_msg, hdrs=None, fp=None)

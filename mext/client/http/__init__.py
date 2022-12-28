@@ -33,10 +33,12 @@ class Http:
 
         return self.scraper.request(
             url=url,
+            proxies=self.proxies,
             headers=headers,
             cookies=cookies,
             method=method,
             files=files,
+            data=data,
             **kwargs
         )
 

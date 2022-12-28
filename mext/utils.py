@@ -18,30 +18,3 @@ def get_status(logs):
                     return d['message']['params']['response']['status']
             except:
                 pass
-
-
-# Decorator
-
-def data_page(func):
-    attr_name = enums.DatacallAttributes[func.__name__]
-
-    @functools.wraps(func)
-    def wrapper(instance, url, page=1, refresh=False):
-
-        attr_value = getattr(instance, attr_name, None)
-
-        try:
-            if attr_value and refresh is False:
-                return attr_value
-
-            return_data = func(instance, url, page)
-
-            if instance.client.is_selenium:
-                instance.selenium.exit()
-
-            setattr(instance, attr_name, return_data)
-            return getattr(instance, attr_name)
-        except Exception as e:
-            raise e
-
-    return wrapper

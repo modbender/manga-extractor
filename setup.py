@@ -13,18 +13,11 @@ setuptools.setup(
     author_email='rameshmamathayashas@gmail.com',
     packages=setuptools.find_packages(),
     package_dir={'mext': 'mext'},
-    package_data={
-        'mext': ['data/*.json'],
-    },
     install_requires=[
         'requests',
         'lxml>=4.6.0',
         'cloudscraper',
         'beautifulsoup4>=4.10.0',
-        # 'undetected-chromedriver>=3.1.6',
-        # 'pyvirtualdisplay>=2.2',
-        # 'easyprocess>=1.0',
-        # 'pillow>=9.1.0',
     ],
     python_requires='>=3.5',
     platforms=['any'],
