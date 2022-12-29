@@ -176,17 +176,23 @@ class MangadexOrg(Provider):
     def populate_chapter_data(self, data):
         chapter = models.Chapter(self)
         chapter.id = data.get("id")
+        chapter.url = f"{self.siteUrl}/chapter/{chapter.id}"
 
         _attrs = data.get("attributes")
         _rel = data.get("relationships", [])
         chapter.volume = float(_attrs.get("volume") or 0)
-        chapter.number = _attrs.get("chapter")
-        chapter.name = _attrs.get("title")
+        chapter.number = (_attrs.get("chapter") or "")
+        if chapter.number == "":
+            chapter.oneshot = True
+
+        chapter.name = (_attrs.get("title") or "")
         chapter.language = _attrs.get("translatedLanguage").lower()
         chapter.created_at = datetime.fromisoformat(
-            _attrs.get("publishAt"))
+            _attrs.get("publishAt")
+        )
         chapter.updated_at = datetime.fromisoformat(
-            _attrs.get("updatedAt"))
+            _attrs.get("updatedAt")
+        )
 
         return chapter
 
@@ -197,7 +203,9 @@ class MangadexOrg(Provider):
         if includes:
             params = {"includes[]": includes}
         req = self.client.http.get(
-            f"{self.api_url}/chapter/{uuid}", params=params)
+            f"{self.api_url}/chapter/{uuid}",
+            params=params
+        )
         if req.status_code == 200:
             resp = req.json()
             data = resp["data"]
@@ -223,7 +231,7 @@ class MangadexOrg(Provider):
         return self._retrieve_chapters(
             f"{self.api_url}/manga/{uuid}/feed",
             models.Chapter,
-            call_limit=100, 
+            call_limit=100,
             params=params
         )
 

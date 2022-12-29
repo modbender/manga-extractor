@@ -8,14 +8,15 @@ This has been tested only on Windows 11 64-bit.
 
 ## Requirements
 
-- Chrome Browser
 - Node.js
 
 ## Installations
 
-`pip install mext`
+```bash
+pip install mext
+```
 
-**Important: It's necessary to have a virtual or real display to run this for best results**
+<!-- **Important: It's necessary to have a virtual or real display to run this for best results** -->
 
 
 ## Usage
@@ -26,10 +27,19 @@ The providers and it's usage is listed below.
 
 It's easy to use from python code.
 
-**Steps:**
-1. Import `Mext` like this
+## Proxy
 
-    `from mext import Mext`
+To use proxy IP's
+```bash
+export HTTP_PROXY='http://10.10.10.10:8000'
+export HTTPS_PROXY='http://10.10.10.10:1212'
+```
+
+## Steps:
+1. Import `Mext` like this
+    ```python
+    from mext import Mext
+    ```
 
 2. Get the URL of manga or chapter and pass it to `Mext`
 

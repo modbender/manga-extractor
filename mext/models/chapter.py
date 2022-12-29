@@ -23,6 +23,7 @@ class Chapter(Model):
         self.volume: float = float(0)
         self.language: str = ""
         self.special: bool = False
+        self.oneshot: bool = False
         self.pages: List[models.Page] = ""
         self.manga: models.Manga = None
         self.group: models.Group = None
