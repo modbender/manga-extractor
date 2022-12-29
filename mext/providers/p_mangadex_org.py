@@ -182,8 +182,7 @@ class MangadexOrg(Provider):
         _rel = data.get("relationships", [])
         chapter.volume = float(_attrs.get("volume") or 0)
         chapter.number = (_attrs.get("chapter") or "")
-        if chapter.number == "":
-            chapter.oneshot = True
+        chapter.page_count = int(_attrs.get("pages"))
 
         chapter.name = (_attrs.get("title") or "")
         chapter.language = _attrs.get("translatedLanguage").lower()
@@ -310,7 +309,4 @@ class MangadexOrg(Provider):
                 time.sleep(self.rate_limit)
         if not data:
             raise NoResultsError()
-        return [self.populate_chapter_data(x) for x in data]
-
-
-main = MangadexOrg
+        return [self.populate_chapter_data(x) for x in data if int(x["attributes"]["pages"]) > 0]

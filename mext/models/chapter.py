@@ -9,7 +9,7 @@ from .model import Model
 class Chapter(Model):
     """Represents a Chapter."""
     __slots__ = (
-        "id", "name", "number", "volume", "language", "special", "pages",
+        "id", "name", "number", "volume", "language", "special", "pages", "page_count",
         "manga", "group", "uploader", "url", "created_at", "updated_at",
         "provider", "instance"
     )
@@ -25,6 +25,7 @@ class Chapter(Model):
         self.special: bool = False
         self.oneshot: bool = False
         self.pages: List[models.Page] = ""
+        self.page_count: int = int(0)
         self.manga: models.Manga = None
         self.group: models.Group = None
         self.uploader: str = None
