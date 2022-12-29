@@ -176,7 +176,7 @@ class MangadexOrg(Provider):
     def populate_chapter_data(self, data):
         chapter = models.Chapter(self)
         chapter.id = data.get("id")
-        chapter.url = f"{self.siteUrl}/chapter/{chapter.id}"
+        chapter.url = f"https://{self.siteUrl}/chapter/{chapter.id}"
 
         _attrs = data.get("attributes")
         _rel = data.get("relationships", [])
