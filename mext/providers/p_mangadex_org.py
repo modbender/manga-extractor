@@ -29,6 +29,18 @@ class MangadexLinkNames(enums.AttributeEnum):
     OfficialEnglishTL = 'engtl'
 
 
+mangadex_language_map = {
+    'zh-hk': 'zh',
+    'zh-ro': 'zh',
+    'ja-ro': 'ja',
+    'ko-ro': 'ko',
+    'zh': 'zh',
+    'en': 'en',
+    'ja': 'ja',
+    'ko': 'ko',
+}
+
+
 class MangadexOrg(Provider):
 
     def __init__(self, *args, **kwargs):
@@ -46,132 +58,115 @@ class MangadexOrg(Provider):
         self.process_url(url)
         return self.parsed_url.path.split('/')[2]
 
-    def get_manga(self, url, page) -> models.Manga:
+    def populate_manga_data(self, data) -> models.Manga:
+        manga = models.Manga(self)
 
-        uuid = self.get_uuid(url)
-        includes = INCLUDE_ALL
-        params = None
-        if includes:
-            params = {"includes[]": includes}
-        req = self.client.http.get(
-            f"{self.api_url}/manga/{uuid}", params=params)
-        if req.status_code == 200:
-            resp = req.json()
-            data = resp["data"]
+        manga.id = data.get("id")
+        _attrs = data.get("attributes")
+        _rel = data.get("relationships", [])
+        manga.title = _attrs.get("title").get("en")
+        manga.alts = [list(alt_dict.values())[0]
+                      for alt_dict in _attrs.get("altTitles")]
+        manga.description = _attrs.get("description").get("en")
+        manga.language = mangadex_language_map[
+            _attrs.get("originalLanguage").lower()
+        ]
+        manga.comic_type = enums.ComicTypesLanguage[
+            data.get("type").lower()
+        ].name.title()
+        # manga.last_chapter = _attrs.get("lastChapter")
 
-            manga = models.Manga(self)
-            manga.url = url
+        demo_genre = models.Genre(self)
+        demo_genre.name = (
+            _attrs.get("publicationDemographic") or ""
+        ).title()
 
-            manga.id = data.get("id")
-            _attrs = data.get("attributes")
-            _rel = data.get("relationships", [])
-            manga.title = _attrs.get("title").get("en")
-            manga.alts = [list(alt_dict.values())[0]
-                          for alt_dict in _attrs.get("altTitles")]
-            manga.description = _attrs.get("description").get("en")
-            manga.language = enums.ComicTypesLanguage(
-                _attrs.get("originalLanguage").lower()
-            ).value
-            manga.comic_type = enums.ComicTypesLanguage[
-                data.get("type").lower()
-            ].name.title()
-            # manga.last_chapter = _attrs.get("lastChapter")
+        manga.status = enums.StatusTypes(
+            _attrs.get("status").lower()
+        ).name
+        manga.year = int(_attrs.get("year") or manga.year)
 
-            demo_genre = models.Genre(self)
-            demo_genre.name = (
-                _attrs.get("publicationDemographic") or ""
-            ).title()
+        manga.created_at = datetime.fromisoformat(_attrs.get("createdAt"))
+        manga.updated_at = datetime.fromisoformat(_attrs.get("updatedAt"))
 
-            manga.status = enums.StatusTypes[
-                _attrs.get("status").title()
-            ].name
-            manga.year = int(_attrs.get("year") or manga.year)
+        try:
+            links = []
 
-            manga.created_at = datetime.fromisoformat(_attrs.get("createdAt"))
-            manga.updated_at = datetime.fromisoformat(_attrs.get("updatedAt"))
+            for link_key, link_value in _attrs.get("links").items():
+                link = models.Link(self)
+                link.name = MangadexLinkNames(link_key).name
+                link.link = link_value
+                links.append(link)
 
-            try:
-                links = []
+            manga.links = links
+        except:
+            print("Exception getting Link:\n", e)
 
-                for link_key, link_value in _attrs.get("links").items():
-                    link = models.Link(self)
-                    link.name = MangadexLinkNames(link_key).name
-                    link.link = link_value
-                    links.append(link)
+        try:
+            genres = []
+            for genre_attr in _attrs.get("tags"):
+                genre = models.Genre(self)
+                genre.name = genre_attr["attributes"]["name"].get("en")
 
-                manga.links = links
-            except:
-                print("Exception getting Link:\n", e)
+                if not genre.name:
+                    continue
 
-            try:
-                genres = []
-                for genre_attr in _attrs.get("tags"):
-                    genre = models.Genre(self)
-                    genre.name = genre_attr["attributes"]["name"].get("en")
+                genres.append(genre)
+            manga.genres = genres
+        except Exception as e:
+            print("Exception getting Genre:\n", e)
 
-                    if not genre.name:
-                        continue
+        try:
+            authors = []
 
-                    genres.append(genre)
-                manga.genres = genres
-            except Exception as e:
-                print("Exception getting Genre:\n", e)
+            _author_list = [
+                x["attributes"] for x in _rel if x["type"] == "author"
+            ]
+            for author_rel in _author_list:
+                author = models.Person(self)
+                author.name = author_rel["name"]
+                authors.append(author)
 
-            try:
-                authors = []
+            manga.authors = authors
+        except (IndexError, KeyError) as e:
+            print("Exception getting Authors:\n", e)
 
-                _author_list = [
-                    x["attributes"] for x in _rel if x["type"] == "author"
-                ]
-                for author_rel in _author_list:
-                    author = models.Person(self)
-                    author.name = author_rel["name"]
-                    authors.append(author)
+        try:
+            artists = []
 
-                manga.authors = authors
-            except (IndexError, KeyError) as e:
-                print("Exception getting Authors:\n", e)
+            _artist_list = [
+                x["attributes"] for x in _rel if x["type"] == "artist"
+            ]
+            for artist_rel in _artist_list:
+                artist = models.Person(self)
+                artist.name = artist_rel["name"]
+                artists.append(artist)
 
-            try:
-                artists = []
+            manga.artists = artists
+        except (IndexError, KeyError) as e:
+            print("Exception getting Artists:\n", e)
 
-                _artist_list = [
-                    x["attributes"] for x in _rel if x["type"] == "artist"
-                ]
-                for artist_rel in _artist_list:
-                    artist = models.Person(self)
-                    artist.name = artist_rel["name"]
-                    artists.append(artist)
+        try:
+            covers = []
+            _cover_list = [
+                x["attributes"] for x in _rel if x["type"] == "cover_art"
+            ]
+            for cover_rel in _cover_list:
+                cover = models.Cover(self)
+                cover.volume = float(cover_rel.get("volume") or 0)
+                cover.filename = cover_rel.get("fileName")
+                cover.image_link = f"https://uploads.mangadex.org/covers/{manga.id}/{cover.filename}"
+                covers.append(cover)
 
-                manga.artists = artists
-            except (IndexError, KeyError) as e:
-                print("Exception getting Artists:\n", e)
+            manga.all_covers = covers
 
-            try:
-                covers = []
-                _cover_list = [
-                    x["attributes"] for x in _rel if x["type"] == "cover_art"
-                ]
-                for cover_rel in _cover_list:
-                    cover = models.Cover(self)
-                    cover.volume = float(cover_rel.get("volume") or 0)
-                    cover.filename = cover_rel.get("fileName")
-                    cover.image_link = f"https://uploads.mangadex.org/covers/{manga.id}/{cover.filename}"
-                    covers.append(cover)
+            if covers:
+                manga.current_cover = covers[-1]
 
-                manga.all_covers = covers
+        except (IndexError, KeyError) as e:
+            print("Exception getting Covers:\n", e)
 
-                if covers:
-                    manga.current_cover = covers[-1]
-
-            except (IndexError, KeyError) as e:
-                print("Exception getting Covers:\n", e)
-
-            return manga
-        elif req.status_code == 404:
-            raise NoContentError(req)
-        else:
-            raise APIError(req)
+        return manga
 
     def populate_chapter_data(self, data):
         chapter = models.Chapter(self)
@@ -195,10 +190,70 @@ class MangadexOrg(Provider):
 
         return chapter
 
-    def get_chapter(self, url, page) -> models.Chapter:
+    def get_latest(self, url: str, params: Dict) -> List[models.Manga]:
+        includes = INCLUDE_ALL
+        params = params or {}
+        if includes:
+            params = {"includes[]": includes}
+        params = {
+            **params,
+            "translatedLanguage[]": "en",
+            "order[readableAt]": "desc",
+            "limit": 100,
+        }
+        req = self.client.http.get(
+            f"{self.api_url}/chapter",
+            params=params
+        )
+        if req.status_code == 200:
+            resp = req.json()
+            data_list = resp["data"]
+
+            latest_list = []
+            for data in data_list:
+
+                _rel = data["relationships"]
+                _manga = [
+                    x for x in _rel if x["type"] == "manga"
+                ][0]
+
+                manga = self.populate_manga_data(_manga)
+                latest_list.append(manga)
+
+            return latest_list
+        elif req.status_code == 404:
+            raise NoContentError(req)
+        else:
+            raise APIError(req)
+
+        return
+
+    def get_manga(self, url, params) -> models.Manga:
+
         uuid = self.get_uuid(url)
         includes = INCLUDE_ALL
-        params = None
+        params = params or {}
+        if includes:
+            params = {"includes[]": includes}
+        req = self.client.http.get(
+            f"{self.api_url}/manga/{uuid}", params=params)
+        if req.status_code == 200:
+            resp = req.json()
+            data = resp["data"]
+
+            manga = self.populate_manga_data(data)
+            manga.url = url
+
+            return manga
+        elif req.status_code == 404:
+            raise NoContentError(req)
+        else:
+            raise APIError(req)
+
+    def get_chapter(self, url, params) -> models.Chapter:
+        uuid = self.get_uuid(url)
+        includes = INCLUDE_ALL
+        params = params or {}
         if includes:
             params = {"includes[]": includes}
         req = self.client.http.get(
@@ -218,10 +273,10 @@ class MangadexOrg(Provider):
         else:
             raise APIError(req)
 
-    def get_manga_chapters(self, url, page) -> List[models.Chapter]:
+    def get_manga_chapters(self, url, params) -> List[models.Chapter]:
         uuid = self.get_uuid(url)
         includes = INCLUDE_ALL
-        params = {
+        params = params or {
             "translatedLanguage[]": "en",
             "order[chapter]": "desc",
         }
@@ -234,7 +289,7 @@ class MangadexOrg(Provider):
             params=params
         )
 
-    def get_cover(self, url, page) -> models.Cover:
+    def get_cover(self, url, params) -> models.Cover:
         uuid = self.get_uuid(url)
         req = self.client.http.get(f"{self.api_url}/cover/{uuid}")
         if req.status_code == 200:

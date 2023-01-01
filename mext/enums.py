@@ -30,11 +30,11 @@ class AttributeEnum(str, BaseEnum):
 
 
 class StatusTypes(AttributeEnum):
-    Ongoing = 'Ongoing'
-    Completed = 'Completed'
-    Haitus = 'Haitus'
-    Dropped = 'Dropped'
-    ComingSoon = 'Comic Soon'
+    Ongoing = 'ongoing'
+    Completed = 'completed'
+    Hiatus = 'hiatus'
+    Dropped = 'dropped'
+    ComingSoon = 'comic Soon'
 
 
 class ComicTypesLanguage(AttributeEnum):
@@ -42,3 +42,10 @@ class ComicTypesLanguage(AttributeEnum):
     manhua = 'zh'
     manhwa = 'ko'
     webtoon = 'en'
+
+class ContentRatingTypes(AttributeEnum):
+    """Lowest to Highest order Content Rating"""
+    Safe = 'safe'
+    Suggestive = 'suggestive'
+    Erotica = 'erotica'
+    Pornographic = 'pornographic'

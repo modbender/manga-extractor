@@ -1,5 +1,5 @@
 from urllib.parse import urlparse
-from typing import List
+from typing import List, Dict
 
 from mext import models, providers
 from mext.provider import Provider
@@ -25,20 +25,20 @@ class Mext:
 
         return self.provider
 
-    def get_latest(self, url: str, page=1) -> List[models.Manga]:
-        return self.get_provider(url).get_latest(url, page)
+    def get_latest(self, url: str, params: Dict = {}) -> List[models.Manga]:
+        return self.get_provider(url).get_latest(url, params)
 
-    def get_manga(self, url: str, page=1) -> models.Manga:
-        return self.get_provider(url).get_manga(url, page)
+    def get_manga(self, url: str, params: Dict = {}) -> models.Manga:
+        return self.get_provider(url).get_manga(url, params)
 
-    def get_manga_list(self, url: str, page=1) -> List[models.Manga]:
-        return self.get_provider(url).get_manga_list(url, page)
+    def get_manga_list(self, url: str, params: Dict = {}) -> List[models.Manga]:
+        return self.get_provider(url).get_manga_list(url, params)
 
-    def get_chapter(self, url: str, page=1) -> models.Chapter:
-        return self.get_provider(url).get_chapter(url, page)
+    def get_chapter(self, url: str, params: Dict = {}) -> models.Chapter:
+        return self.get_provider(url).get_chapter(url, params)
 
-    def get_manga_chapters(self, url: str, page=1) -> List[models.Chapter]:
-        return self.get_provider(url).get_manga_chapters(url, page)
+    def get_manga_chapters(self, url: str, params: Dict = {}) -> List[models.Chapter]:
+        return self.get_provider(url).get_manga_chapters(url, params)
 
     @property
     def all_providers(self):

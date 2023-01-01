@@ -82,7 +82,7 @@ class ReaperScansCom(Provider):
             # Status
             if field_name == 'Release Status':
                 if field_value:
-                    manga.status = enums.StatusTypes['Ongoing'].name
+                    manga.status = enums.StatusTypes('ongoing').name
 
             # Type
             type_element = soup.select('div.tsinfo div.imptdt')[1]

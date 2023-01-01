@@ -11,7 +11,7 @@ class Manga(Model):
     __slots__ = (
         "id", "title", "alts", "description", "links", "language", "comic_type", "status",
         "year", "rating", "followers", "genres", "tags", "authors", "artists", "current_cover",
-        "all_covers", "banner_picture", "adult", "first_chapter", "last_chapter", "chapter_list",
+        "all_covers", "banner_picture", "content_rating", "first_chapter", "last_chapter", "chapter_list",
         "url", "created_at", "updated_at", "provider", "instance"
     )
 
@@ -36,7 +36,7 @@ class Manga(Model):
         self.current_cover: models.Cover = None
         self.all_covers: List[models.Cover] = []
         self.banner_picture: str = ""
-        self.adult: bool = False
+        self.content_rating: str = ""
         self.first_chapter: models.Chapter = None
         self.last_chapter: models.Chapter = None
         self.chapter_list: List[models.Chapter] = []

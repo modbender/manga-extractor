@@ -54,7 +54,7 @@ class MangaStreamBase(Provider):
 
         return chapter_number, chapter_name
 
-    def get_latest(self, url, page):
+    def get_latest(self, url, params):
 
         parsed_url = urlparse('/'.join(url.split('/')[0:3]))
 
@@ -126,7 +126,7 @@ class MangaStreamBase(Provider):
 
         return latest_list
 
-    def get_manga(self, url, page):
+    def get_manga(self, url, params):
 
         req = self.client.http.get(url)
         self.find_error(url)
@@ -356,7 +356,7 @@ class MangaStreamBase(Provider):
         # Return complete Manga data
         return manga
 
-    def get_chapter(self, url, page):
+    def get_chapter(self, url, params):
 
         req = self.client.http.get(url)
         self.find_error(url)
@@ -415,7 +415,7 @@ class MangaStreamBase(Provider):
 
         return chapter
 
-    def get_manga_chapters(self, url, page):
+    def get_manga_chapters(self, url, params):
 
         req = self.client.http.get(url)
         self.find_error(url)

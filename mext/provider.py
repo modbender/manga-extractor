@@ -1,6 +1,6 @@
 from urllib.error import HTTPError
 from urllib.parse import urlparse
-from typing import List
+from typing import List, Dict
 
 from mext import client, utils
 
@@ -27,23 +27,23 @@ class Provider:
         self.scheme = self.parsed_url.scheme
         self.netloc = self.parsed_url.netloc
 
-    def get_latest(self, url: str, page=1) -> List[models.Manga]:
+    def get_latest(self, url: str, params: Dict = {}) -> List[models.Manga]:
         """Gets list of updated mangas."""
         raise NotImplementedError
 
-    def get_manga(self, url: str, page=1) -> models.Manga:
+    def get_manga(self, url: str, params: Dict = {}) -> models.Manga:
         """Gets a manga with a specific url."""
         raise NotImplementedError
 
-    def get_manga_list(self, url: str, page=1) -> List[models.Manga]:
+    def get_manga_list(self, url: str, params: Dict = {}) -> List[models.Manga]:
         """Gets a list of Manga."""
         raise NotImplementedError
 
-    def get_chapter(self, url: str, page=1) -> models.Chapter:
+    def get_chapter(self, url: str, params: Dict = {}) -> models.Chapter:
         """Gets a chapter with a specific url."""
         raise NotImplementedError
 
-    def get_manga_chapters(self, url: str, page=1) -> List[models.Chapter]:
+    def get_manga_chapters(self, url: str, params: Dict = {}) -> List[models.Chapter]:
         """Gets chapters associated with a specific Manga."""
         raise NotImplementedError
 
