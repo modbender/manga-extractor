@@ -34,10 +34,6 @@ mangadex_language_map = {
     'zh-ro': 'zh',
     'ja-ro': 'ja',
     'ko-ro': 'ko',
-    'zh': 'zh',
-    'en': 'en',
-    'ja': 'ja',
-    'ko': 'ko',
 }
 
 
@@ -70,9 +66,14 @@ class MangadexOrg(Provider):
         manga.alts = [list(alt_dict.values())[0]
                       for alt_dict in _attrs.get("altTitles")]
         manga.description = _attrs.get("description").get("en")
-        manga.language = mangadex_language_map[
-            _attrs.get("originalLanguage").lower()
-        ]
+
+        _original_language = _attrs.get("originalLanguage").lower()
+
+        if _original_language in mangadex_language_map:
+            manga.language = mangadex_language_map[_original_language]
+        else:
+            manga.language = _original_language
+
         manga.comic_type = enums.ComicTypesLanguage[
             data.get("type").lower()
         ].name.title()
@@ -159,7 +160,7 @@ class MangadexOrg(Provider):
             _cover_list = [
                 x["attributes"] for x in _rel if x["type"] == "cover_art"
             ]
-            
+
             for cover_rel in _cover_list:
                 cover = models.Cover(self)
                 cover.volume = float(cover_rel.get("volume") or 0)

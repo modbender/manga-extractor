@@ -91,6 +91,7 @@ class MangaStreamBase(Provider):
 
                     cover_element = update_element.select_one(
                         'div.limit > img.ts-post-image[alt][src]')
+
                     if cover_element:
                         cover = models.Cover(self)
                         cover.image_link = cover_element.attrs['src']

@@ -31,7 +31,7 @@ class Http:
         headers.setdefault('Accept-Language', self.default_lang)
         headers['Accept'] = self.webp_header
 
-        return self.scraper.request(
+        req = self.scraper.request(
             url=url,
             proxies=self.proxies,
             headers=headers,
@@ -41,6 +41,10 @@ class Http:
             data=data,
             **kwargs
         )
+
+        self.status_code = req.status_code
+
+        return req
 
     def get(self, url: str, headers: dict = {}, cookies: dict = {}, **kwargs):
         return self.request(

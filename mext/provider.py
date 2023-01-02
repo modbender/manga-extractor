@@ -2,9 +2,7 @@ from urllib.error import HTTPError
 from urllib.parse import urlparse
 from typing import List, Dict
 
-from mext import client, utils
-
-from mext import models
+from mext import models, client, utils
 
 
 class Provider:
@@ -15,10 +13,10 @@ class Provider:
         self.language = ''
 
         self.client = client.Client('http')
-    
+
     def __str__(self) -> str:
         return self.name
-    
+
     def __str__(self) -> str:
         return str(self)
 

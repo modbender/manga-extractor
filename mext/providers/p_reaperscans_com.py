@@ -5,8 +5,7 @@ from urllib.parse import ParseResult, urlencode, urlparse, urlunparse
 
 from bs4 import BeautifulSoup
 
-from mext import enums
-from mext import models
+from mext import enums, models
 from mext.provider import Provider
 
 
