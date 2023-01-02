@@ -63,7 +63,7 @@ class MangaStreamBase(Provider):
             netloc=parsed_url.netloc,
             path='/manga/',
             params='',
-            query=urlencode({'page': page, 'order': 'update'}),
+            query=urlencode(params or {'page': 1, 'order': 'update'}),
             fragment=''
         )
 
