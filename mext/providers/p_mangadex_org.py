@@ -62,6 +62,8 @@ class MangadexOrg(Provider):
         manga = models.Manga(self)
 
         manga.id = data.get("id")
+        manga.url = f"https://{self.siteUrl}/title/{manga.id}"
+
         _attrs = data.get("attributes")
         _rel = data.get("relationships", [])
         manga.title = _attrs.get("title").get("en")
@@ -92,27 +94,32 @@ class MangadexOrg(Provider):
         try:
             links = []
 
-            for link_key, link_value in _attrs.get("links").items():
-                link = models.Link(self)
-                link.name = MangadexLinkNames(link_key).name
-                link.link = link_value
-                links.append(link)
+            if _attrs.get("links"):
 
-            manga.links = links
-        except:
+                for link_key, link_value in _attrs.get("links").items():
+                    link = models.Link(self)
+                    link.name = MangadexLinkNames(link_key).name
+                    link.link = link_value
+                    links.append(link)
+
+                manga.links = links
+        except Exception as e:
             print("Exception getting Link:\n", e)
 
         try:
             genres = []
-            for genre_attr in _attrs.get("tags"):
-                genre = models.Genre(self)
-                genre.name = genre_attr["attributes"]["name"].get("en")
 
-                if not genre.name:
-                    continue
+            if _attrs.get("tags"):
 
-                genres.append(genre)
-            manga.genres = genres
+                for genre_attr in _attrs.get("tags"):
+                    genre = models.Genre(self)
+                    genre.name = genre_attr["attributes"]["name"].get("en")
+
+                    if not genre.name:
+                        continue
+
+                    genres.append(genre)
+                manga.genres = genres
         except Exception as e:
             print("Exception getting Genre:\n", e)
 
@@ -122,6 +129,7 @@ class MangadexOrg(Provider):
             _author_list = [
                 x["attributes"] for x in _rel if x["type"] == "author"
             ]
+
             for author_rel in _author_list:
                 author = models.Person(self)
                 author.name = author_rel["name"]
@@ -151,6 +159,7 @@ class MangadexOrg(Provider):
             _cover_list = [
                 x["attributes"] for x in _rel if x["type"] == "cover_art"
             ]
+            
             for cover_rel in _cover_list:
                 cover = models.Cover(self)
                 cover.volume = float(cover_rel.get("volume") or 0)
