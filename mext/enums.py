@@ -34,6 +34,7 @@ class StatusTypes(AttributeEnum):
     Completed = 'completed'
     Hiatus = 'hiatus'
     Dropped = 'dropped'
+    Cancelled = 'cancelled'
     ComingSoon = 'comic Soon'
 
 

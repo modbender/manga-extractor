@@ -62,7 +62,11 @@ class MangadexOrg(Provider):
 
         _attrs = data.get("attributes")
         _rel = data.get("relationships", [])
+
         manga.title = _attrs.get("title").get("en")
+        if not manga.title:
+            return None
+
         manga.alts = [list(alt_dict.values())[0]
                       for alt_dict in _attrs.get("altTitles")]
         manga.description = _attrs.get("description").get("en")
@@ -228,6 +232,9 @@ class MangadexOrg(Provider):
                 ][0]
 
                 manga = self.populate_manga_data(_manga)
+                if not manga:
+                    continue
+
                 latest_list.append(manga)
 
             return latest_list
@@ -235,8 +242,6 @@ class MangadexOrg(Provider):
             raise NoContentError(req)
         else:
             raise APIError(req)
-
-        return
 
     def get_manga(self, url, params) -> models.Manga:
 
@@ -252,6 +257,9 @@ class MangadexOrg(Provider):
             data = resp["data"]
 
             manga = self.populate_manga_data(data)
+            if not manga:
+                raise Exception(f"Error getting manga details for ID {uuid}")
+
             manga.url = url
 
             return manga

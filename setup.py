@@ -4,7 +4,7 @@ README = open('README.md').read()
 
 setuptools.setup(
     name='mext',
-    version='2.0.7',
+    version='2.0.8',
     url='https://github.com/modbender/manga-extractor',
     description='A simple manga extractor. Extracts any comic info, chapter list and chapter pages. In development.',
     long_description=README,
