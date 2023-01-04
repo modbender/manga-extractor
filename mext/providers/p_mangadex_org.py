@@ -92,6 +92,9 @@ class MangadexOrg(Provider):
             _attrs.get("status").lower()
         ).name
         manga.year = int(_attrs.get("year") or manga.year)
+        
+        _content_rating = _attrs.get("contentRating") or enums.ContentRatingTypes.Safe
+        manga.content_rating = enums.ContentRatingTypes(_content_rating).value
 
         manga.created_at = datetime.fromisoformat(_attrs.get("createdAt"))
         manga.updated_at = datetime.fromisoformat(_attrs.get("updatedAt"))

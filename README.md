@@ -2,6 +2,12 @@
 
 A simple manga extractor. Extracts any comic info, chapter list and chapter pages. This is an app that strictly provides API.
 
+This package uses multiple provider codes to extract manga/manhua/manhwa data from online sites.
+
+The providers and it's usage is listed below.
+
+It's easy to use from python code.
+
 **Still in development.**
 
 This has been tested only on Windows 11 64-bit.
@@ -17,15 +23,6 @@ pip install mext
 ```
 
 <!-- **Important: It's necessary to have a virtual or real display to run this for best results** -->
-
-
-## Usage
-
-This package uses multiple provider codes to extract manga/manhua/manhwa data from online sites.
-
-The providers and it's usage is listed below.
-
-It's easy to use from python code.
 
 ## Proxy
 
@@ -68,10 +65,13 @@ export HTTPS_PROXY='http://10.10.10.10:1212'
 
 1. MangaDex
 2. AsuraScans
+3. MangaUpdates (In development)
+3. ReaperScans (In development)
+3. ManhuaPlus (In development)
 
 ...others coming soon
 
-### Mangadex
+## Usage
 
 Get Manga using Manga URL
 
