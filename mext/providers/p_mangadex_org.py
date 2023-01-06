@@ -63,7 +63,7 @@ class MangadexOrg(Provider):
         _attrs = data.get("attributes")
         _rel = data.get("relationships", [])
 
-        manga.title = _attrs.get("title").get("en")
+        manga.title = _attrs.get("title").get("en") or _attrs.get("title").get("ja")
         if not manga.title:
             return None
 
