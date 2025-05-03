@@ -14,6 +14,9 @@ class MangaStreamBase(Provider):
 
     def __init__(self, name, siteUrl):
         self.name = name
+
+        self.
+
         super(MangaStreamBase, self).__init__(name, siteUrl)
 
     def process_chapter_name(self, chapter_text):
@@ -425,7 +428,7 @@ class MangaStreamBase(Provider):
 
         soup = BeautifulSoup(req.content, 'lxml')
 
-        chapters_element = soup.select_one('ul.clstyle')
+        chapters_element = soup.select_one('#chapterlist > ul')
 
         for chapter_element in chapters_element.select('li[data-num]'):
             chapter = models.Chapter(self)

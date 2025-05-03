@@ -3,6 +3,7 @@ import re
 from mext.provider import Provider
 
 from .p_asurascans_com import AsuraScansCom
+from .p_anigliscans_com import AniGliScans
 from .p_mangadex_org import MangadexOrg
 from .p_reaperscans_com import ReaperScansCom
 
@@ -12,6 +13,11 @@ ALL_PROVIDERS = [
         "name": "AsuraScans",
         "regex": r".*(asura\.gg|asurascans\.com).*",
         "class": AsuraScansCom
+    },
+    {
+        "name": "AniGliScans",
+        "regex": r".*(anigliscans\.com).*",
+        "class": AniGliScans
     },
     {
         "name": "ReaperScans",

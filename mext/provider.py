@@ -7,6 +7,25 @@ from mext import models, client, utils
 
 class Provider:
 
+    name: str = ''
+    siteUrl: str = ''
+    language: str = ''
+    client: client.Client = None
+
+    # Latest Selectors
+    selector_latest_manga_list: str = ''
+    selector_latest_manga_chapter_list: str = ''
+
+    # Manga List Selectors
+    selector_manga_list: str = ''
+
+    # Chapter List Selectors
+    selector_chapter_list: str = ''
+
+    # Chapter Selectors
+    selector_chapter_info: str = ''
+    selector_chapter_page_list: str = ''
+
     def __init__(self, name, siteUrl):
         self.name = name
         self.siteUrl = siteUrl
